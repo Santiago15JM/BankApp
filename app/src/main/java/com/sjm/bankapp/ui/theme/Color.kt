@@ -45,3 +45,9 @@ fun secondaryBtnColor(): Color {
     return if (isSystemInDarkTheme()) DarkSecondaryBtnColor
     else LightSecondaryBtnColor
 }
+
+@Composable
+fun emphasisTextColor(): Color {
+    return if (isSystemInDarkTheme()) LowBlue
+    else Green
+}

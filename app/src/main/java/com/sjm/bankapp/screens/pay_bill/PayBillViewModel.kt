@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sjm.bankapp.logic.Bill
-import com.sjm.bankapp.logic.BillQuote
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Server
-import com.sjm.bankapp.logic.TransactionResponse
+import com.sjm.bankapp.logic.models.Bill
+import com.sjm.bankapp.logic.models.BillQuote
+import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -31,7 +31,7 @@ class PayBillViewModel : ViewModel() {
     fun onPayBill(next: (Bill, TransactionResponse) -> Unit) {
         if (shopID.isNotEmpty() && billCode.isNotEmpty() && !fetchCostJob.isActive) {
             val bill = Bill(
-                customerId = LocalStorage.currentUser,
+                customerId = LocalStorage.userId,
                 shopId = Random.nextLong(),
                 cost = cost,
                 date = LocalDateTime.now()

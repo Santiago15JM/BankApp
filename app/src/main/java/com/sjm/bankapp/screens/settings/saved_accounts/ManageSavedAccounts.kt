@@ -35,7 +35,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.SavedAccount
+import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.BottomButtonBar
 import com.sjm.bankapp.screens.Button

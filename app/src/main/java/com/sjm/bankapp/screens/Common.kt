@@ -96,6 +96,17 @@ fun Subtitle(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun Subtext(text: String, modifier: Modifier = Modifier, color: Color = Color.Unspecified) {
+    Text(
+        text = text,
+        fontSize = 18.sp,
+        modifier = modifier.fillMaxWidth(),
+        textAlign = TextAlign.Center,
+        color = color
+    )
+}
+
+@Composable
 fun Balance(getBalance: () -> Number) {
     var showBalance by remember { mutableStateOf(false) }
     Row(

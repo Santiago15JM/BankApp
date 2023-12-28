@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.Account
+import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Server
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
@@ -23,10 +23,10 @@ import com.sjm.bankapp.screens.destinations.SettingsDestination
 
 @Destination
 @Composable
-fun Home(navigator: DestinationsNavigator, usrAcc: Account) {
+fun Home(navigator: DestinationsNavigator) {
     Base {
         Text(
-            "Bienvenido\n${usrAcc.user}",
+            "Bienvenido\n${LocalStorage.userName}",
             fontSize = 40.sp,
             modifier = Modifier
                 .weight(2f)

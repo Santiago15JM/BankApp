@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.Upsert
+import com.sjm.bankapp.logic.models.SavedAccount
 import kotlinx.coroutines.flow.Flow
 
 @Database(
@@ -22,9 +23,6 @@ interface SavedAccountsDao {
 
     @Upsert
     suspend fun upsert(accounts: SavedAccount)
-
-//    @Upsert
-//    suspend fun upsertAll(accounts: List<TransactionAccount>)
 
     @Delete
     suspend fun delete(account: SavedAccount)

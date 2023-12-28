@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.Bill
-import com.sjm.bankapp.logic.TransactionResponse
+import com.sjm.bankapp.logic.models.Bill
+import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.Card

@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.LocalStorage
-import com.sjm.bankapp.logic.SavedAccount
+import com.sjm.bankapp.logic.models.SavedAccount
 import kotlinx.coroutines.launch
 
 class SavedAccountsViewModel: ViewModel() {

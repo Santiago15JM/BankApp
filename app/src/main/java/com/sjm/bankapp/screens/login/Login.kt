@@ -80,8 +80,8 @@ fun Login(navigator: DestinationsNavigator, loginVM: LoginViewModel = viewModel(
 
         Spacer(Modifier.height(20.dp))
 
-        OutlinedTextField(value = loginVM.user,
-            onValueChange = { loginVM.updateUser(it) },
+        OutlinedTextField(value = loginVM.email,
+            onValueChange = { loginVM.email = it },
             label = { Text("Usuario") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
@@ -89,7 +89,7 @@ fun Login(navigator: DestinationsNavigator, loginVM: LoginViewModel = viewModel(
 
         var passwordVisibility by remember { mutableStateOf(false) }
         OutlinedTextField(value = loginVM.password,
-            onValueChange = { loginVM.updatePassword(it) },
+            onValueChange = { loginVM.password = it },
             label = { Text("Contraseña") },
             singleLine = true,
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),

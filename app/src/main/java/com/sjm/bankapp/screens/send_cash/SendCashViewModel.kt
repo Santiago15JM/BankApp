@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.LocalStorage
-import com.sjm.bankapp.logic.SavedAccount
 import com.sjm.bankapp.logic.Server
-import com.sjm.bankapp.logic.Transaction
-import com.sjm.bankapp.logic.TransactionResponse
-import com.sjm.bankapp.logic.TransactionType
+import com.sjm.bankapp.logic.models.SavedAccount
+import com.sjm.bankapp.logic.models.Transaction
+import com.sjm.bankapp.logic.models.TransactionType
+import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -46,9 +46,10 @@ class SendCashViewModel : ViewModel() {
         val t = Transaction(
             type = TransactionType.TRANSFER_OUT,
             amount = amount.toInt(),
-            senderId = LocalStorage.currentUser,
+            senderId = LocalStorage.userId,
             receiverId = if (usingSavedAccount) selectedAccount.value.id else receiverID.toLong(),
-            date = LocalDateTime.now()
+            date = LocalDateTime.now(),
+            currentBalance = 50000
         )
 
         val res = Server.sendCash(t)

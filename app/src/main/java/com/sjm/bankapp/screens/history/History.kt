@@ -20,8 +20,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.logic.Server
-import com.sjm.bankapp.logic.Transaction
-import com.sjm.bankapp.logic.TransactionType
+import com.sjm.bankapp.logic.models.Transaction
+import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button

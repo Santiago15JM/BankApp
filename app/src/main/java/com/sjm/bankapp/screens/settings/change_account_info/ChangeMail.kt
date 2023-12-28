@@ -19,15 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.Card
+import com.sjm.bankapp.screens.Subtext
 import com.sjm.bankapp.screens.Subtitle
+import com.sjm.bankapp.ui.theme.emphasisTextColor
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 
 @Composable
 fun ChangeEmailDialog(
-    onDismissRequest: () -> Unit, onAccept: (String) -> Unit
+    currentEmail: String,
+    onDismissRequest: () -> Unit,
+    onAccept: (String) -> Unit,
 ) {
     var newMail by remember { mutableStateOf("") }
 
@@ -36,7 +39,9 @@ fun ChangeEmailDialog(
             Column(Modifier.padding(20.dp)) {
                 Subtitle("Cambiar correo")
 
-                Text("Correo actual: ${LocalStorage.getCurrentEmail()}")
+                Subtext("Esto cerrará tu sesión.", color = emphasisTextColor())
+
+                Subtext("Correo actual: $currentEmail")
 
                 OutlinedTextField(
                     value = newMail,
@@ -61,7 +66,7 @@ fun ChangeEmailDialog(
                     Spacer(modifier = Modifier.width(20.dp))
 
                     Button(modifier = Modifier.weight(1f),
-                        enabled = newMail.isValidEmail(),
+                        enabled = newMail.isValidEmail() && newMail != currentEmail,
                         onClick = {
                             onAccept(newMail)
                             onDismissRequest()

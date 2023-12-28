@@ -24,12 +24,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.Card
+import com.sjm.bankapp.screens.Subtext
 import com.sjm.bankapp.screens.Subtitle
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 
 @Composable
 fun ChangePhoneDialog(
-    onDismissRequest: () -> Unit, onAccept: (String) -> Unit
+    currentPhone: String,
+    onDismissRequest: () -> Unit,
+    onAccept: (String) -> Unit,
 ) {
     var newPhoneNumber by remember { mutableStateOf("") }
 
@@ -37,6 +40,8 @@ fun ChangePhoneDialog(
         Card(shape = RoundedCornerShape(10.dp)) {
             Column(Modifier.padding(20.dp)) {
                 Subtitle("Cambiar teléfono")
+
+                Subtext("Teléfono actual: $currentPhone")
 
                 OutlinedTextField(
                     value = newPhoneNumber,
@@ -62,7 +67,7 @@ fun ChangePhoneDialog(
                     Spacer(modifier = Modifier.width(20.dp))
 
                     Button(modifier = Modifier.weight(1f),
-                        enabled = newPhoneNumber.isNotBlank(),
+                        enabled = newPhoneNumber.isNotBlank() && newPhoneNumber != currentPhone,
                         onClick = {
                             onAccept(newPhoneNumber)
                             onDismissRequest()

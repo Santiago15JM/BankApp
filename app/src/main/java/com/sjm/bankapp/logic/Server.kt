@@ -2,12 +2,24 @@ package com.sjm.bankapp.logic
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import com.sjm.bankapp.config.RetrofitHelper
+import com.sjm.bankapp.logic.models.Bill
+import com.sjm.bankapp.logic.models.BillQuote
+import com.sjm.bankapp.logic.models.Transaction
+import com.sjm.bankapp.logic.models.TransactionType
+import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
+import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
+import com.sjm.bankapp.logic.models.dao.LoginRequest
+import com.sjm.bankapp.logic.models.dao.LoginResponse
+import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import java.time.LocalDateTime
 import kotlin.random.Random
 
 object Server {
-    val ts = mutableStateListOf(
-        Transaction(1, TransactionType.DEPOSIT, 56000, 2, 1, LocalDateTime.now()),
+    private val api = RetrofitHelper.getInstance()
+
+    private val ts = mutableStateListOf(
+        Transaction(1, TransactionType.DEPOSIT, 56000, 2, 1, LocalDateTime.now(), 50000),
     )
 
     fun getTransactionHistory(from: Int = 0): MutableList<Transaction> {
@@ -24,7 +36,7 @@ object Server {
         return res
     }
 
-    fun payBill(bill: Bill) : TransactionResponse {
+    fun payBill(bill: Bill): TransactionResponse {
         Log.d("PAY_BILL", "Attempting Request")
         val res = TransactionResponse(Random.nextLong(), "Success")
         bill.id = res.transactionId
@@ -35,7 +47,8 @@ object Server {
                 bill.cost,
                 bill.customerId,
                 bill.shopId,
-                bill.date
+                bill.date,
+                50000
             )
         )
         return res
@@ -47,11 +60,18 @@ object Server {
         )
     }
 
-    fun changeEmail(email: String) {
-        Log.d("CHANGE EMAIL", "Changed email")
+
+    suspend fun login(email: String, password: String): LoginResponse? {
+        return api.login(LoginRequest(email, password)).body()
     }
 
-    fun changePhone(phone: String) {
-        Log.d("CHANGE PHONE", "Changed phone number")
+    suspend fun changeEmail(userId: Long, email: String): Boolean {
+        val response = api.changeEmail(ChangeEmailRequest(userId, email))
+        return response.body()?.succeeded ?: false
+    }
+
+    suspend fun changePhone(userId: Long, phone: String): Boolean {
+        val response = api.changePhone(ChangePhoneRequest(userId, phone))
+        return response.body()?.succeeded ?: false
     }
 }
