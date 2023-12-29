@@ -318,7 +318,7 @@ fun LoadingDialog() {
     Dialog({}) {
         Card {
             Column(Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Espera por favor")
+                Subtitle(text = "Espera por favor")
                 Spacer(Modifier.height(10.dp))
                 CircularProgressIndicator()
             }
@@ -331,6 +331,8 @@ fun GenericDialog(
     text: String,
     subtext: String = "",
     icon: ImageVector? = null,
+    buttonText: String = "OK",
+    onButtonClick: (() -> Unit)? = null,
     onDismissRequest: () -> Unit,
 ) {
     Dialog(onDismissRequest) {
@@ -340,8 +342,8 @@ fun GenericDialog(
                 Subtitle(text = text)
                 if (subtext.isNotBlank()) Subtext(text = subtext)
                 Spacer(Modifier.height(10.dp))
-                Button(onClick = onDismissRequest) {
-                    Text(text = "OK")
+                Button(onClick = onButtonClick ?: onDismissRequest) {
+                    Text(text = buttonText)
                 }
             }
         }

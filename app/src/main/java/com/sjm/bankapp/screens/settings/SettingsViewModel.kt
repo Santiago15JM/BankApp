@@ -10,7 +10,6 @@ import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
 import kotlinx.coroutines.launch
-import java.net.SocketTimeoutException
 
 class SettingsViewModel : ViewModel() {
     var showChangeEmail by mutableStateOf(false)
@@ -34,7 +33,7 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     showError = true
                 }
-            } catch (e: SocketTimeoutException) {
+            } catch (e: Exception) {
                 showNetworkError = true
             }
             showLoading = false
@@ -52,7 +51,7 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     showError = true
                 }
-            } catch (e: SocketTimeoutException) {
+            } catch (e: Exception) {
                 showNetworkError = true
             }
             showLoading = false
@@ -70,7 +69,7 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     showError = true
                 }
-            } catch (e: SocketTimeoutException) {
+            } catch (e: Exception) {
                 showNetworkError = true
             }
             showLoading = false
