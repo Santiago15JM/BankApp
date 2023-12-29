@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
-import com.sjm.bankapp.logic.Server
 import com.sjm.bankapp.logic.models.Bill
 import com.sjm.bankapp.logic.models.BillQuote
 import com.sjm.bankapp.logic.models.dao.TransactionResponse
@@ -36,7 +36,7 @@ class PayBillViewModel : ViewModel() {
                 cost = cost,
                 date = LocalDateTime.now()
             )
-            val res = Server.payBill(bill)
+            val res = BankEnd.payBill(bill)
             next(bill, res)
         }
     }
@@ -47,7 +47,7 @@ class PayBillViewModel : ViewModel() {
         isFetchingQuote = true
         delay(200) // "Fetch delay"
 
-        quote = Server.fetchBill(billCode.toInt(), shopID.toInt())
+        quote = BankEnd.fetchBill(billCode.toInt(), shopID.toInt())
         cost = quote!!.cost
 
         isFetchingQuote = false

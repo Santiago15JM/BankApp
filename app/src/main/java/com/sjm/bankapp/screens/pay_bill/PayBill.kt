@@ -31,7 +31,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.Server
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.BottomButtonBar
@@ -50,7 +50,7 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
     Base {
 
         Title(text = "Pagar factura")
-        Balance { Server.getBalance() }
+        Balance { BankEnd.getBalance() }
 
         //TODO: Improve UI
 

@@ -15,7 +15,7 @@ import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-object Server {
+object BankEnd {
     private val api = RetrofitHelper.getInstance()
 
     private val ts = mutableStateListOf(

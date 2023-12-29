@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
-import com.sjm.bankapp.logic.Server
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.TransactionType
@@ -52,7 +52,7 @@ class SendCashViewModel : ViewModel() {
             currentBalance = 50000
         )
 
-        val res = Server.sendCash(t)
+        val res = BankEnd.sendCash(t)
         next(t, res)
     }
 

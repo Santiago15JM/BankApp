@@ -16,9 +16,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
-import com.sjm.bankapp.logic.Server
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.MenuOption

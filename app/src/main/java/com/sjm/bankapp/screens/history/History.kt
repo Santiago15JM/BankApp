@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.Server
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.screens.Balance
@@ -40,7 +40,7 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
     Base {
 
         Title("Historial de transacciones")
-        Balance { Server.getBalance() }
+        Balance { BankEnd.getBalance() }
 
         LazyColumn(
             state = ls, verticalArrangement = Arrangement.Top, modifier = Modifier.weight(9F)
