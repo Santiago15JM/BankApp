@@ -5,5 +5,4 @@ data class LoginResponse(
     val id: Long,
     val name: String,
     val phone: String,
-    val balance: Long,
 )

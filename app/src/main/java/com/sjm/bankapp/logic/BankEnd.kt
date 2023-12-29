@@ -8,6 +8,7 @@ import com.sjm.bankapp.logic.models.BillQuote
 import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
+import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
 import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
 import com.sjm.bankapp.logic.models.dao.LoginRequest
 import com.sjm.bankapp.logic.models.dao.LoginResponse
@@ -72,6 +73,11 @@ object BankEnd {
 
     suspend fun changePhone(userId: Long, phone: String): Boolean {
         val response = api.changePhone(ChangePhoneRequest(userId, phone))
+        return response.body()?.succeeded ?: false
+    }
+
+    suspend fun changePassword(userId: Long, newPassword: String, oldPassword: String): Boolean {
+        val response = api.changePassword(ChangePasswordRequest(userId, oldPassword, newPassword))
         return response.body()?.succeeded ?: false
     }
 }

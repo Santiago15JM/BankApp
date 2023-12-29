@@ -15,20 +15,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
-//import androidx.compose.material.icons.filled.Visibility
-//import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,15 +42,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -274,3 +285,65 @@ fun VisibilityIcon(show: Boolean) = Icon(
     painter = painterResource(if (show) R.drawable.visibility_off else R.drawable.visibility),
     contentDescription = "Balance visibility button"
 )
+
+@Composable
+fun PasswordTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    imeAction: ImeAction = ImeAction.Default,
+    onDone: (KeyboardActionScope.() -> Unit) = {},
+) {
+    var passwordVisibility by remember { mutableStateOf(false) }
+
+    OutlinedTextField(value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        singleLine = true,
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password, imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions(onDone = onDone),
+        trailingIcon = {
+            IconButton(onClick = { passwordVisibility = !passwordVisibility },
+                modifier = Modifier.focusProperties { canFocus = false }) {
+                VisibilityIcon(show = passwordVisibility)
+            }
+        })
+}
+
+@Composable
+fun LoadingDialog() {
+    Dialog({}) {
+        Card {
+            Column(Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Espera por favor")
+                Spacer(Modifier.height(10.dp))
+                CircularProgressIndicator()
+            }
+        }
+    }
+}
+
+@Composable
+fun GenericDialog(
+    text: String,
+    subtext: String = "",
+    icon: ImageVector? = null,
+    onDismissRequest: () -> Unit,
+) {
+    Dialog(onDismissRequest) {
+        Card {
+            Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                if (icon != null) Icon(icon, "Dialog icon", Modifier.size(40.dp))
+                Subtitle(text = text)
+                if (subtext.isNotBlank()) Subtext(text = subtext)
+                Spacer(Modifier.height(10.dp))
+                Button(onClick = onDismissRequest) {
+                    Text(text = "OK")
+                }
+            }
+        }
+    }
+}

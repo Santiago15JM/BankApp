@@ -2,6 +2,8 @@ package com.sjm.bankapp.logic
 
 import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
 import com.sjm.bankapp.logic.models.dao.ChangeEmailResponse
+import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
+import com.sjm.bankapp.logic.models.dao.ChangePasswordResponse
 import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
 import com.sjm.bankapp.logic.models.dao.ChangePhoneResponse
 import com.sjm.bankapp.logic.models.dao.LoginRequest
@@ -20,5 +22,7 @@ interface BankEndApi {
 
     @PUT("user/changePhone")
     suspend fun changePhone(@Body changePhoneRequest: ChangePhoneRequest): Response<ChangePhoneResponse>
-}
 
+    @PUT("user/changePassword")
+    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<ChangePasswordResponse>
+}

@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -28,9 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,14 +32,17 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.R
 import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.VisibilityIcon
+import com.sjm.bankapp.screens.GenericDialog
+import com.sjm.bankapp.screens.LoadingDialog
+import com.sjm.bankapp.screens.PasswordTextField
+import com.sjm.bankapp.screens.destinations.HomeDestination
 import com.sjm.bankapp.ui.theme.SurfaceDark
 import com.sjm.bankapp.ui.theme.SurfaceLight
 
 @RootNavGraph(start = true)
 @Destination
 @Composable
-fun Login(navigator: DestinationsNavigator, loginVM: LoginViewModel = viewModel()) {
+fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
     val c = LocalContext.current
 
     Column(
@@ -80,36 +76,42 @@ fun Login(navigator: DestinationsNavigator, loginVM: LoginViewModel = viewModel(
 
         Spacer(Modifier.height(20.dp))
 
-        OutlinedTextField(value = loginVM.email,
-            onValueChange = { loginVM.email = it },
+        OutlinedTextField(value = vm.email,
+            onValueChange = { vm.email = it },
             label = { Text("Usuario") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
-        var passwordVisibility by remember { mutableStateOf(false) }
-        OutlinedTextField(value = loginVM.password,
-            onValueChange = { loginVM.password = it },
-            label = { Text("Contraseña") },
-            singleLine = true,
-            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            keyboardActions = KeyboardActions(onDone = { loginVM.logIn(navigator, c) }),
-            trailingIcon = {
-
-                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                    VisibilityIcon(show = passwordVisibility)
-                }
-            })
+        PasswordTextField(value = vm.password,
+            onValueChange = { vm.password = it },
+            label = "Contraseña",
+            onDone = { vm.logIn(navigator, c) })
 
         Spacer(Modifier.height(30.dp))
 
         Button(
-            onClick = { loginVM.logIn(navigator, c) }, contentPadding = PaddingValues(20.dp, 10.dp)
+            onClick = { vm.logIn(navigator, c) }, contentPadding = PaddingValues(20.dp, 10.dp)
         ) {
             Text("INGRESAR")
         }
+        Button(
+            onClick = { navigator.navigate(HomeDestination) },
+            contentPadding = PaddingValues(20.dp, 10.dp)
+        ) {
+            Text("DEV")
+        }
+
+        when {
+            vm.showLoading -> LoadingDialog()
+
+            vm.showNetworkError -> GenericDialog("Hubo un error con la red", icon = Icons.Default.Warning) {
+                vm.showNetworkError = false
+            }
+            
+            vm.showBadCredentials -> GenericDialog("Credenciales incorrectas", icon = Icons.Default.Warning) {
+                vm.showBadCredentials = false
+            }
+        }
     }
 }
-
-
