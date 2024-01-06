@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
@@ -19,6 +20,7 @@ import com.sjm.bankapp.screens.GenericDialog
 import com.sjm.bankapp.screens.LoadingDialog
 import com.sjm.bankapp.screens.MenuOption
 import com.sjm.bankapp.screens.OptionsCard
+import com.sjm.bankapp.screens.Subtitle
 import com.sjm.bankapp.screens.Title
 import com.sjm.bankapp.screens.destinations.LoginDestination
 import com.sjm.bankapp.screens.destinations.ManageSavedAccountsDestination
@@ -38,6 +40,8 @@ fun Settings(navigator: DestinationsNavigator, vm: SettingsViewModel = viewModel
         Title(text = "Opciones")
 
         Spacer(Modifier.weight(1f))
+
+        Subtitle(text = "Tu cuenta: ${LocalStorage.userId}")
 
         OptionsCard {
             MenuOption(text = "Cuentas guardadas",
