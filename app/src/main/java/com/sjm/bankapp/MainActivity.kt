@@ -57,7 +57,7 @@ fun BankApp() {
 
     val connectivityObserver: ConnectivityObserver = NetworkObserver(LocalContext.current)
     val status by connectivityObserver.observe().collectAsState(
-        initial = ConnectivityObserver.Status.Unavailable
+        initial = ConnectivityObserver.Status.Available
     )
 
     BankAppTheme {
