@@ -1,6 +1,5 @@
 package com.sjm.bankapp.logic
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.sjm.bankapp.config.RetrofitHelper
 import com.sjm.bankapp.logic.models.Bill
@@ -10,6 +9,7 @@ import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
 import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
 import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
+import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.logic.models.dao.LoginRequest
 import com.sjm.bankapp.logic.models.dao.LoginResponse
 import com.sjm.bankapp.logic.models.dao.TransactionResponse
@@ -23,9 +23,8 @@ object BankEnd {
         Transaction(1, TransactionType.DEPOSIT, 56000, 2, 1, LocalDateTime.now(), 50000),
     )
 
-    fun getTransactionHistory(from: Int = 0): MutableList<Transaction> {
-        //Get history from x index to lazy load
-        return ts
+    suspend fun getTransactionHistory(from: Int = 0): List<Entry>? {
+        return api.getTransactionHistory(LocalStorage.accountId, from).body()
     }
 
     fun getBalance() = 10230000

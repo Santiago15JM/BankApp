@@ -28,6 +28,9 @@ interface BankEndApi {
     @GET("transactions/getBalance")
     suspend fun getBalance(@Query("accountId") accountId: Long): Long
 
+    @GET("transactions/getTransactionHistory")
+    suspend fun getTransactionHistory(@Query("accountId") accountId: Long, @Query("page") page: Int = 0): Response<List<Entry>>
+
     @PUT("user/changePassword")
     suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<ChangePasswordResponse>
 }

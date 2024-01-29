@@ -19,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.BankEnd
-import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.TransactionType
+import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
@@ -52,7 +51,7 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
                 }
             } else {
                 items(vm.history, key = { it.id }) { t ->
-                    TransactionItem(t)
+                    EntryItem(t)
                 }
             }
         }
@@ -68,7 +67,7 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
 }
 
 @Composable
-fun TransactionItem(transaction: Transaction) {
+fun EntryItem(entry: Entry) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, strokeColor()),
@@ -83,14 +82,14 @@ fun TransactionItem(transaction: Transaction) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
             ) {
-                Text(transaction.type.text)
+                Text(entry.type.text)
                 Text(
-                    text = "${transaction.amount}",
-                    color = getTypeColor(transaction.type),
+                    text = "${entry.amount}",
+                    color = getTypeColor(entry.type),
                 )
             }
             Row {
-                Text(transaction.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm")))
+                Text(entry.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm")))
             }
         }
     }
