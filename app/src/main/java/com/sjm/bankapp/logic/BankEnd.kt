@@ -61,6 +61,9 @@ object BankEnd {
         )
     }
 
+    suspend fun getBalance(): Long {
+        return api.getBalance(LocalStorage.accountId)
+    }
 
     suspend fun login(email: String, password: String): LoginResponse? {
         return api.login(LoginRequest(email, password)).body()

@@ -31,7 +31,7 @@ class PayBillViewModel : ViewModel() {
     fun onPayBill(next: (Bill, TransactionResponse) -> Unit) {
         if (shopID.isNotEmpty() && billCode.isNotEmpty() && !fetchCostJob.isActive) {
             val bill = Bill(
-                customerId = LocalStorage.userId,
+                customerId = LocalStorage.accountId,
                 shopId = Random.nextLong(),
                 cost = cost,
                 date = LocalDateTime.now()

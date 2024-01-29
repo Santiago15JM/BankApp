@@ -35,6 +35,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.sjm.bankapp.R
+import com.sjm.bankapp.logic.BankEnd.getBalance
 import com.sjm.bankapp.ui.theme.SurfaceDark
 import com.sjm.bankapp.ui.theme.SurfaceLight
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
@@ -118,15 +120,23 @@ fun Subtext(text: String, modifier: Modifier = Modifier, color: Color = Color.Un
 }
 
 @Composable
-fun Balance(getBalance: () -> Number) {
+fun Balance() {
     var showBalance by remember { mutableStateOf(false) }
+    var balance by remember { mutableStateOf("espera") }
+    LaunchedEffect(Unit) {
+        balance = try {
+            getBalance().toString()
+        } catch (e: Exception) {
+            "error"
+        }
+    }
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Balance: ${if (showBalance) getBalance() else "*"}",
+            text = "Balance: ${if (showBalance) balance else "*"}",
             fontSize = 20.sp,
             fontWeight = FontWeight(500),
             textAlign = TextAlign.Start,

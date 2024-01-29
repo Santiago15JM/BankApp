@@ -40,7 +40,8 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
     Base {
 
         Title("Historial de transacciones")
-        Balance { BankEnd.getBalance() }
+
+        Balance()
 
         LazyColumn(
             state = ls, verticalArrangement = Arrangement.Top, modifier = Modifier.weight(9F)

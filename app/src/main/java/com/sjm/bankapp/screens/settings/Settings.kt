@@ -41,7 +41,7 @@ fun Settings(navigator: DestinationsNavigator, vm: SettingsViewModel = viewModel
 
         Spacer(Modifier.weight(1f))
 
-        Subtitle(text = "Tu cuenta: ${LocalStorage.userId}")
+        Subtitle(text = "Tu cuenta:\n${LocalStorage.accountId}")
 
         OptionsCard {
             MenuOption(text = "Cuentas guardadas",

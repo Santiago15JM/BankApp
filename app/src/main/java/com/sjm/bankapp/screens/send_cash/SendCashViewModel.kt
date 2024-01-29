@@ -46,7 +46,7 @@ class SendCashViewModel : ViewModel() {
         val t = Transaction(
             type = TransactionType.TRANSFER_OUT,
             amount = amount.toInt(),
-            senderId = LocalStorage.userId,
+            senderId = LocalStorage.accountId,
             receiverId = if (usingSavedAccount) selectedAccount.value.id else receiverID.toLong(),
             date = LocalDateTime.now(),
             currentBalance = 50000

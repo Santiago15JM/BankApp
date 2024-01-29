@@ -25,7 +25,7 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch {
             showLoading = true
             try {
-                val res = BankEnd.changeEmail(LocalStorage.userId, email)
+                val res = BankEnd.changeEmail(LocalStorage.accountId, email)
                 if (res) {
                     Preferences.saveEmail(context, email)
                     logout = true
@@ -44,7 +44,7 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch {
             showLoading = true
             try {
-                val res = BankEnd.changePhone(LocalStorage.userId, phone)
+                val res = BankEnd.changePhone(LocalStorage.accountId, phone)
                 if (res) {
                     Preferences.savePhone(context, phone)
                     showSuccess = true
@@ -62,7 +62,7 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch {
             showLoading = true
             try {
-                val res = BankEnd.changePassword(LocalStorage.userId, newPassword, oldPassword)
+                val res = BankEnd.changePassword(LocalStorage.accountId, newPassword, oldPassword)
                 if (res) {
                     logout = true
                     showSuccess = true

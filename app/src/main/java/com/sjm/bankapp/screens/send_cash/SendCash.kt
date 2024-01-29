@@ -37,7 +37,6 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
@@ -60,7 +59,7 @@ fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
     Base {
         Title(text = "Enviar dinero")
 
-        Balance { BankEnd.getBalance() }
+        Balance()
 
         Spacer(Modifier.weight(0.3F))
 

@@ -9,7 +9,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
@@ -34,7 +33,7 @@ fun Home(navigator: DestinationsNavigator) {
             textAlign = TextAlign.Center,
         )
 
-        Balance { BankEnd.getBalance() }
+        Balance()
 
         OptionsCard(Modifier.weight(3f)) {
             Text("Menu principal", fontSize = 30.sp)

@@ -5,7 +5,7 @@ import androidx.room.Room
 
 object LocalStorage {
     private lateinit var db: AppDatabase
-    var userId: Long = 0
+    var accountId: Long = 0
         private set
     var authToken: String = ""
         private set
@@ -25,7 +25,7 @@ object LocalStorage {
     fun getSavedAccountsDao() = db.savedAccountsDao()
 
     suspend fun loadDetails(context: Context) {
-        userId = Preferences.getUserId(context)!!
+        accountId = Preferences.getAccountId(context)!!
         authToken = Preferences.getAuthToken(context)!!
         userName = Preferences.getUserName(context)!!
         userEmail = Preferences.getUserEmail(context)!!
@@ -35,13 +35,13 @@ object LocalStorage {
     suspend fun saveLoginDetails(
         context: Context, token: String, id: Long, name: String, email: String, phone: String
     ) {
-        Preferences.saveUserId(context, id)
+        Preferences.saveAccountId(context, id)
         Preferences.saveAuthToken(context, token)
         Preferences.saveUserName(context, name)
         Preferences.saveEmail(context, email)
         Preferences.savePhone(context, phone)
 
-        userId = id
+        accountId = id
         authToken = token
         userName = name
         userEmail = email

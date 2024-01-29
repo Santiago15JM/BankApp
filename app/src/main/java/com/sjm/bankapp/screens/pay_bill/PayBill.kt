@@ -31,7 +31,6 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.BottomButtonBar
@@ -50,7 +49,8 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
     Base {
 
         Title(text = "Pagar factura")
-        Balance { BankEnd.getBalance() }
+
+        Balance()
 
         //TODO: Improve UI
 
@@ -116,7 +116,8 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
             }
         }
 
-        BottomButtonBar(onCancel = { nav.navigateUp() },
+        BottomButtonBar(
+            onCancel = { nav.navigateUp() },
             acceptText = "PAGAR",
             onAccept = { showConfirmDialog = true },
             isAcceptEnabled = vm.shouldEnableButton()
