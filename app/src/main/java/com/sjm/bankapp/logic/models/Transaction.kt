@@ -4,11 +4,10 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 data class Transaction(
-    var id: Long = 0,
-    val type: TransactionType,
+    val operationId: String,
     val amount: Int,
     val senderId: Long,
     val receiverId: Long,
     val date: LocalDateTime,
-    val currentBalance: Long
-) : Serializable //TODO Migrate to Parcelables
+    val resultingBalance: Long,
+) : Serializable // TODO Migrate to Parcelables

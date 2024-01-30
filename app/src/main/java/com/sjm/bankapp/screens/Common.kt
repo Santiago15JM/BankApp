@@ -359,3 +359,10 @@ fun GenericDialog(
         }
     }
 }
+
+fun errorText(code: Int) = when (code) {
+    400 -> "Datos invalidos"
+    402 -> "Fondos insuficientes"
+    404 -> "La cuenta destino no existe"
+    else -> "Hubo un error"
+}

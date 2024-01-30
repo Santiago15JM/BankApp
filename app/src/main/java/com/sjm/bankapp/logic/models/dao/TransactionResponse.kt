@@ -1,8 +1,10 @@
 package com.sjm.bankapp.logic.models.dao
 
 import java.io.Serializable
+import java.time.LocalDateTime
 
 data class TransactionResponse(
-    val transactionId: Long,
-    val transactionResult: String,
+    val operationId: String,
+    val date: LocalDateTime,
+    val balance: Long
 ) : Serializable

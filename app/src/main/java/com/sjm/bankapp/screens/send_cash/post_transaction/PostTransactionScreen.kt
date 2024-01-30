@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.Card
@@ -32,8 +31,8 @@ fun PostTransactionScreen(transaction: Transaction, response: TransactionRespons
                 Text(text = "Fecha: ${transaction.date.format(DateTimeFormatter.ofPattern("d/M/y HH:mm:ss"))}")
                 Text(text = "Cuenta origen: ${transaction.senderId}")
                 Text(text = "Cuenta destino: ${transaction.receiverId}")
-                Text(text = "Estado: ${response.transactionResult}") //FIXME Always will be Succeeded, otherwise this screen wouldn't be called
-                Text(text = "Id: ${response.transactionId}")
+                Text(text = "Saldo total: ${transaction.resultingBalance}")
+                Text(text = "Id: ${transaction.operationId}")
             }
         }
 

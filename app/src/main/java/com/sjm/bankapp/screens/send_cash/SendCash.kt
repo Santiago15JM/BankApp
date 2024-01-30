@@ -43,18 +43,21 @@ import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.BottomButtonBar
 import com.sjm.bankapp.screens.Card
 import com.sjm.bankapp.screens.ConfirmDialog
+import com.sjm.bankapp.screens.GenericDialog
 import com.sjm.bankapp.screens.Subtitle
 import com.sjm.bankapp.screens.Title
 import com.sjm.bankapp.screens.destinations.PostTransactionScreenDestination
+import com.sjm.bankapp.screens.errorText
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.strokeColor
 
-//@RootNavGraph(start = true)
 @Destination
 @Composable
 fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
     var showConfirmDialog by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var error = 0
 
     Base {
         Title(text = "Enviar dinero")
@@ -81,22 +84,33 @@ fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
             },
         )
 
-        if (showConfirmDialog) {
-            ConfirmDialog(title = "¿Confirmas esta transferencia?", onAccept = {
-                vm.onSendTransaction(
-                    // TODO wait for transaction
-                    next = { t, res -> nav.navigate(PostTransactionScreenDestination(t, res)) })
-            }, onDismissRequest = { showConfirmDialog = false }) {
-                Text(
-                    "Destino: ${if (vm.usingSavedAccount) vm.selectedAccount.value.description else vm.receiverID}",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    "Monto: $${vm.amount}",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+        when {
+            showConfirmDialog -> {
+                ConfirmDialog(title = "¿Confirmas esta transferencia?", onAccept = {
+                    vm.onSendTransaction(onSuccess = { t ->
+                        showConfirmDialog = false
+                        nav.navigate(PostTransactionScreenDestination(t))
+                    }, onError = { code ->
+                        showConfirmDialog = false
+                        error = code
+                        showError = true
+                    })
+                }, onDismissRequest = { showConfirmDialog = false }) {
+                    Text(
+                        "Destino: ${if (vm.usingSavedAccount) vm.selectedAccount.value.description else vm.receiverID}",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        "Monto: $${vm.amount}",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            showError -> {
+                GenericDialog(text = errorText(error), onDismissRequest = { showError = false })
             }
         }
     }
@@ -194,9 +208,7 @@ fun SavedAccountsList(
 
 @Composable
 fun RadioGroup(
-    items: List<SavedAccount>,
-    selection: SavedAccount,
-    onItemClick: ((SavedAccount) -> Unit)
+    items: List<SavedAccount>, selection: SavedAccount, onItemClick: ((SavedAccount) -> Unit)
 ) {
     LazyColumn {
         items(items) { item ->

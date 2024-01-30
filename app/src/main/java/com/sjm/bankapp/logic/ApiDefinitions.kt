@@ -6,8 +6,11 @@ import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
 import com.sjm.bankapp.logic.models.dao.ChangePasswordResponse
 import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
 import com.sjm.bankapp.logic.models.dao.ChangePhoneResponse
+import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.logic.models.dao.LoginRequest
 import com.sjm.bankapp.logic.models.dao.LoginResponse
+import com.sjm.bankapp.logic.models.dao.TransactionRequest
+import com.sjm.bankapp.logic.models.dao.TransactionResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,12 +28,16 @@ interface BankEndApi {
     @PUT("user/changePhone")
     suspend fun changePhone(@Body changePhoneRequest: ChangePhoneRequest): Response<ChangePhoneResponse>
 
+    @PUT("user/changePassword")
+    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<ChangePasswordResponse>
+
     @GET("transactions/getBalance")
     suspend fun getBalance(@Query("accountId") accountId: Long): Long
 
     @GET("transactions/getTransactionHistory")
     suspend fun getTransactionHistory(@Query("accountId") accountId: Long, @Query("page") page: Int = 0): Response<List<Entry>>
 
-    @PUT("user/changePassword")
-    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<ChangePasswordResponse>
+    @POST("transactions/makeTransaction")
+    suspend fun makeTransaction(@Body transactionRequest: TransactionRequest): Response<TransactionResponse>
+
 }

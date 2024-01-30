@@ -10,12 +10,13 @@ import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.TransactionType
-import com.sjm.bankapp.logic.models.dao.TransactionResponse
+import com.sjm.bankapp.logic.models.dao.TransactionRequest
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 class SendCashViewModel : ViewModel() {
+    private var dao = LocalStorage.getSavedAccountsDao()
+    var amount by mutableStateOf("")
+
     //Saved Account
     var savedAccounts: MutableList<SavedAccount> = mutableStateListOf()
     var usingSavedAccount by mutableStateOf(true)
@@ -23,11 +24,9 @@ class SendCashViewModel : ViewModel() {
 
     //Non Saved Account
     var receiverID by mutableStateOf("")
-    var amount by mutableStateOf("")
     var description by mutableStateOf("")
     var saveAccount by mutableStateOf(false)
 
-    private var dao = LocalStorage.getSavedAccountsDao()
 
     init {
         viewModelScope.launch {
@@ -38,22 +37,34 @@ class SendCashViewModel : ViewModel() {
         }
     }
 
-    fun onSendTransaction(next: (Transaction, TransactionResponse) -> Unit) {
+    fun onSendTransaction(onSuccess: (Transaction) -> Unit, onError: (Int) -> Unit) {
         if (!usingSavedAccount && saveAccount) saveNewAccount(
             SavedAccount(receiverID.toLong(), description.ifBlank { receiverID })
         )
 
-        val t = Transaction(
-            type = TransactionType.TRANSFER_OUT,
+        val request = TransactionRequest(
             amount = amount.toInt(),
             senderId = LocalStorage.accountId,
-            receiverId = if (usingSavedAccount) selectedAccount.value.id else receiverID.toLong(),
-            date = LocalDateTime.now(),
-            currentBalance = 50000
+            receiverId = if (usingSavedAccount) selectedAccount.value.id else receiverID.toLong()
         )
 
-        val res = BankEnd.sendCash(t)
-        next(t, res)
+        viewModelScope.launch {
+            val response = BankEnd.sendCash(request)
+
+            if (response.isSuccessful) {
+                val transaction = Transaction(
+                    operationId = response.body()!!.operationId,
+                    amount = request.amount,
+                    senderId = request.senderId,
+                    receiverId = request.receiverId,
+                    date = response.body()!!.date,
+                    resultingBalance = response.body()!!.balance
+                )
+                onSuccess(transaction)
+            } else {
+                onError(response.code())
+            }
+        }
     }
 
     private fun saveNewAccount(newAccount: SavedAccount) {
