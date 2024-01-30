@@ -1,6 +1,5 @@
 package com.sjm.bankapp.screens.history
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,11 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,11 +24,11 @@ import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
+import com.sjm.bankapp.screens.Card
 import com.sjm.bankapp.screens.Title
 import com.sjm.bankapp.ui.theme.Green
 import com.sjm.bankapp.ui.theme.Red
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
-import com.sjm.bankapp.ui.theme.strokeColor
 import java.time.format.DateTimeFormatter
 
 @Destination
@@ -43,15 +43,42 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
         Balance()
 
         LazyColumn(
-            state = ls, verticalArrangement = Arrangement.Top, modifier = Modifier.weight(9F)
+            state = ls,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(9F)
         ) {
-            if (vm.history.isEmpty()) {
-                item {
-                    Text("No hay transacciones")
-                }
-            } else {
+            if (vm.history.isNotEmpty()) {
                 items(vm.history, key = { it.id }) { t ->
                     EntryItem(t)
+                }
+                item {
+                    when {
+                        vm.loading -> CircularProgressIndicator()
+
+                        vm.failed -> {
+                            LastHistoryItem("Hubo un error obteniendo transacciones anteriores")
+                            TextButton(onClick = { vm.loadMore() }) {
+                                Text("Cargar más")
+                            }
+                        }
+
+                        !vm.endOfHistory -> TextButton(onClick = { vm.loadMore() }) {
+                            Text("Cargar más")
+                        }
+
+                        else -> LastHistoryItem("Fin del historial")
+                    }
+                }
+            } else {
+                item {
+                    when {
+                        !vm.loadedInitial -> CircularProgressIndicator()
+
+                        vm.failed -> Text("Hubo un error obteniendo tus transacciones")
+
+                        vm.history.isEmpty() -> Text("No hay transacciones")
+                    }
                 }
             }
         }
@@ -68,9 +95,7 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
 
 @Composable
 fun EntryItem(entry: Entry) {
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, strokeColor()),
+    Card(
         elevation = 5.dp,
         modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp),
     ) {
@@ -91,6 +116,21 @@ fun EntryItem(entry: Entry) {
             Row {
                 Text(entry.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm")))
             }
+        }
+    }
+}
+
+@Composable
+fun LastHistoryItem(text: String) {
+    Card(
+        elevation = 5.dp,
+        modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp),
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
+            Text(text)
         }
     }
 }
