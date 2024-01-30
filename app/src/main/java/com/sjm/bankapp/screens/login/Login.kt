@@ -77,14 +77,14 @@ fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
         Spacer(Modifier.height(20.dp))
 
         OutlinedTextField(value = vm.email,
-            onValueChange = { vm.email = it },
+            onValueChange = { if (!it.contains(' ')) vm.email = it },
             label = { Text("Usuario") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
         PasswordTextField(value = vm.password,
-            onValueChange = { vm.password = it },
+            onValueChange = { if (!it.contains(' ')) vm.password = it },
             label = "Contraseña",
             onDone = { vm.logIn(navigator, c) })
 
