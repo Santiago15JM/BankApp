@@ -31,6 +31,7 @@ import com.sjm.bankapp.screens.destinations.TransactionDetailsDestination
 import com.sjm.bankapp.ui.theme.Green
 import com.sjm.bankapp.ui.theme.Red
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
+import com.sjm.bankapp.ui.theme.textColor
 import java.time.format.DateTimeFormatter
 
 @Destination
@@ -71,8 +72,9 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
                             }
                         }
 
-                        !vm.endOfHistory -> TextButton(onClick = { vm.loadMore() }) {
-                            Text("Cargar más")
+                        !vm.endOfHistory ->
+                            TextButton(onClick = { vm.loadMore() }, Modifier.padding(10.dp)) {
+                            Text("Cargar más", color = textColor())
                         }
 
                         else -> LastHistoryItem("Fin del historial")

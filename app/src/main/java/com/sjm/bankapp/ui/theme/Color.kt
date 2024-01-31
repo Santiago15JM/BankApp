@@ -51,3 +51,8 @@ fun emphasisTextColor(): Color {
     return if (isSystemInDarkTheme()) LowBlue
     else Green
 }
+
+@Composable
+fun textColor(): Color {
+    return if (isSystemInDarkTheme()) Color.White else Black
+}
