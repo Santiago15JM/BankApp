@@ -99,12 +99,13 @@ fun Title(text: String) {
 }
 
 @Composable
-fun Subtitle(text: String, modifier: Modifier = Modifier) {
+fun Subtitle(text: String, modifier: Modifier = Modifier, color: Color = Color.Unspecified) {
     Text(
         text = text,
         fontSize = 24.sp,
         modifier = modifier.fillMaxWidth(),
         textAlign = TextAlign.Center,
+        color = color
     )
 }
 

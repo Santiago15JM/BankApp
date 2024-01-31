@@ -7,7 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
-import com.sjm.bankapp.logic.models.dao.Entry
+import com.sjm.bankapp.logic.models.Entry
+import com.sjm.bankapp.logic.models.Transaction
 import kotlinx.coroutines.launch
 
 class HistoryViewModel : ViewModel() {
@@ -48,6 +49,14 @@ class HistoryViewModel : ViewModel() {
                 loading = false
                 failed = true
             }
+        }
+    }
+
+    fun getTransactionDetails(operationId: String, nextScreen: (Transaction) -> Unit) {
+        viewModelScope.launch {
+            val transaction = BankEnd.getTransactionDetails(operationId)
+            System.err.println("TRANSACTION: $transaction")
+            if (transaction != null) nextScreen(transaction)
         }
     }
 

@@ -1,6 +1,6 @@
-package com.sjm.bankapp.logic.models.dao
+package com.sjm.bankapp.logic.models
 
-import com.sjm.bankapp.logic.models.TransactionType
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class Entry(
@@ -9,6 +9,6 @@ data class Entry(
     val amount: Int,
     val accountId: Long,
     val date: LocalDateTime,
-    val balanceAtTime: Long,
+    val resultingBalance: Long,
     val id: Long,
-)
+) : Serializable

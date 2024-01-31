@@ -1,5 +1,6 @@
 package com.sjm.bankapp.screens.history
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,13 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.TransactionType
-import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.screens.Balance
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.Card
 import com.sjm.bankapp.screens.Title
+import com.sjm.bankapp.screens.destinations.TransactionDetailsDestination
 import com.sjm.bankapp.ui.theme.Green
 import com.sjm.bankapp.ui.theme.Red
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
@@ -49,8 +51,14 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
             modifier = Modifier.weight(9F)
         ) {
             if (vm.history.isNotEmpty()) {
-                items(vm.history, key = { it.id }) { t ->
-                    EntryItem(t)
+                items(vm.history, key = { it.id }) { e ->
+                    EntryItem(e) {
+                        vm.getTransactionDetails(e.operationId, nextScreen = { t ->
+                            nav.navigate(
+                                TransactionDetailsDestination(t, e)
+                            )
+                        })
+                    }
                 }
                 item {
                     when {
@@ -94,10 +102,12 @@ fun History(vm: HistoryViewModel = viewModel(), nav: DestinationsNavigator) {
 }
 
 @Composable
-fun EntryItem(entry: Entry) {
+fun EntryItem(entry: Entry, onClick: () -> Unit) {
     Card(
         elevation = 5.dp,
-        modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp),
+        modifier = Modifier
+            .padding(horizontal = 15.dp, vertical = 5.dp)
+            .clickable { onClick() },
     ) {
         Column(
             Modifier
@@ -129,7 +139,8 @@ fun LastHistoryItem(text: String) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(16.dp)) {
+                .padding(16.dp)
+        ) {
             Text(text)
         }
     }

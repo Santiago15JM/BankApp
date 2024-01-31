@@ -1,12 +1,13 @@
 package com.sjm.bankapp.logic
 
+import com.sjm.bankapp.logic.models.Entry
+import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
 import com.sjm.bankapp.logic.models.dao.ChangeEmailResponse
 import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
 import com.sjm.bankapp.logic.models.dao.ChangePasswordResponse
 import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
 import com.sjm.bankapp.logic.models.dao.ChangePhoneResponse
-import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.logic.models.dao.LoginRequest
 import com.sjm.bankapp.logic.models.dao.LoginResponse
 import com.sjm.bankapp.logic.models.dao.TransactionRequest
@@ -36,6 +37,9 @@ interface BankEndApi {
 
     @GET("transactions/getTransactionHistory")
     suspend fun getTransactionHistory(@Query("accountId") accountId: Long, @Query("page") page: Int = 0): Response<List<Entry>>
+
+    @GET("transactions/getTransactionDetails")
+    suspend fun getTransactionDetails(@Query("opId") operationId: String): Response<Transaction>
 
     @POST("transactions/makeTransaction")
     suspend fun makeTransaction(@Body transactionRequest: TransactionRequest): Response<TransactionResponse>

@@ -9,5 +9,4 @@ data class Transaction(
     val senderId: Long,
     val receiverId: Long,
     val date: LocalDateTime,
-    val resultingBalance: Long,
 ) : Serializable // TODO Migrate to Parcelables

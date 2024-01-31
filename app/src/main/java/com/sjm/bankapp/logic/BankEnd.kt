@@ -3,10 +3,11 @@ package com.sjm.bankapp.logic
 import com.sjm.bankapp.config.RetrofitHelper
 import com.sjm.bankapp.logic.models.Bill
 import com.sjm.bankapp.logic.models.BillQuote
+import com.sjm.bankapp.logic.models.Entry
+import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
 import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
 import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
-import com.sjm.bankapp.logic.models.dao.Entry
 import com.sjm.bankapp.logic.models.dao.LoginRequest
 import com.sjm.bankapp.logic.models.dao.LoginResponse
 import com.sjm.bankapp.logic.models.dao.TransactionRequest
@@ -71,5 +72,9 @@ object BankEnd {
     suspend fun changePassword(userId: Long, newPassword: String, oldPassword: String): Boolean {
         val response = api.changePassword(ChangePasswordRequest(userId, oldPassword, newPassword))
         return response.body()?.succeeded ?: false
+    }
+
+    suspend fun getTransactionDetails(operationId: String): Transaction? {
+        return api.getTransactionDetails(operationId).body()
     }
 }

@@ -58,7 +58,6 @@ class SendCashViewModel : ViewModel() {
                     senderId = request.senderId,
                     receiverId = request.receiverId,
                     date = response.body()!!.date,
-                    resultingBalance = response.body()!!.balance
                 )
                 onSuccess(transaction)
             } else {
