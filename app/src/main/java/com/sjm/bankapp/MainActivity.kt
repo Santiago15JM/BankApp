@@ -47,10 +47,10 @@ fun BankApp() {
         navHostContentAlignment = Alignment.Center,
         rootDefaultAnimations = RootNavGraphDefaultAnimations(
             enterTransition = {
-                fadeIn(animationSpec = tween(300))
+                fadeIn(animationSpec = tween(400))
             },
             exitTransition = {
-                fadeOut(animationSpec = tween(200))
+                fadeOut(animationSpec = tween(300))
             },
         )
     )

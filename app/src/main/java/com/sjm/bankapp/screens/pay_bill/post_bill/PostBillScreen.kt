@@ -32,8 +32,8 @@ fun PostBillScreen(bill: Bill, response: TransactionResponse, nav: DestinationsN
                 Text(text = "Fecha: ${bill.date.format(DateTimeFormatter.ofPattern("d/M/y HH:mm:ss"))}")
                 Text(text = "Cuenta origen: ${bill.customerId}")
                 Text(text = "Id tienda: ${bill.shopId}")
-                Text(text = "Estado: ${response.transactionResult}") //FIXME Always will be Succeeded, otherwise this screen wouldn't be called
-                Text(text = "Id: ${response.transactionId}")
+//                Text(text = "Estado: ${response.transactionResult}") //FIXME Always will be Succeeded, otherwise this screen wouldn't be called
+                Text(text = "Id: ${response.operationId}")
             }
         }
 

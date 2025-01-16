@@ -28,21 +28,22 @@ object BankEnd {
     }
 
     fun payBill(bill: Bill): TransactionResponse {
-        Log.d("PAY_BILL", "Attempting Request")
-        val res = TransactionResponse(Random.nextLong(), "Success")
-        bill.id = res.transactionId
-        ts.add(
-            0, Transaction(
-                bill.id,
-                TransactionType.BILL,
-                bill.cost,
-                bill.customerId,
-                bill.shopId,
-                bill.date,
-                50000
-            )
-        )
-        return res
+//        Log.d("PAY_BILL", "Attempting Request")
+//        val res = TransactionResponse(Random.nextLong(), "Success")
+//        bill.id = res.transactionId
+//        ts.add(
+//            0, Transaction(
+//                bill.id,
+//                TransactionType.BILL,
+//                bill.cost,
+//                bill.customerId,
+//                bill.shopId,
+//                bill.date,
+//                50000
+//            )
+//        )
+//        return res
+        return TransactionResponse("AAA",LocalDateTime.now(), 0)
     }
 
     fun fetchBill(billCode: Int, shopID: Int): BillQuote {

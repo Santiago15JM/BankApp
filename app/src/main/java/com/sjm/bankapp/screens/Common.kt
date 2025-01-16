@@ -71,7 +71,7 @@ import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import com.sjm.bankapp.ui.theme.strokeColor
 
 @Composable
-fun Base(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun Base(content: @Composable() (ColumnScope.() -> Unit)) {
     Column(
         Modifier
             .fillMaxSize()

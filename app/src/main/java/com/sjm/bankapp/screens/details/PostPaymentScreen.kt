@@ -16,14 +16,13 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
-import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.screens.Base
 import com.sjm.bankapp.screens.Button
 import com.sjm.bankapp.screens.Card
 import com.sjm.bankapp.screens.Subtitle
 import com.sjm.bankapp.screens.Title
+import com.sjm.bankapp.screens.destinations.HomeDestination
 import com.sjm.bankapp.ui.theme.BankAppTheme
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
@@ -31,13 +30,14 @@ import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Composable
 @Destination
-fun TransactionDetails(
-    transaction: Transaction, entry: Entry, nav: DestinationsNavigator
+@Composable
+fun PostPaymentScreen(
+    transaction: Transaction,
+    nav: DestinationsNavigator,
 ) {
     Base {
-        Title("Transacción")
+        Title(text = "Pago realizado")
 
         Card(Modifier.padding(20.dp)) {
             Column {
@@ -46,18 +46,13 @@ fun TransactionDetails(
                         .background(accentColor())
                         .padding(16.dp)
                 ) {
-                    Subtitle("Detalles de la transacción", color = Black)
+                    Subtitle("Detalles del pago", color = Black)
                 }
 
-                Column(
-                    Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Text("Fecha: ${transaction.date.format(DateTimeFormatter.ofPattern("d/M/y HH:mm:ss"))}")
-                    Text("Tipo de movimiento: ${entry.type.text}")
-                    Text("Cuenta origen: ${transaction.senderId}")
-                    Text("Cuenta destino: ${transaction.receiverId}")
-                    Text("Saldo resultante: ${entry.resultingBalance}")
+                Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(text = "Fecha: ${transaction.date.format(DateTimeFormatter.ofPattern("d/M/y HH:mm:ss"))}")
+                    Text(text = "Cuenta origen: ${transaction.senderId}")
+                    Text(text = "Cuenta destino: ${transaction.receiverId}")
                     SelectionContainer {
                         Text("Id: ${transaction.operationId}")
                     }
@@ -66,7 +61,7 @@ fun TransactionDetails(
         }
 
         Button(
-            onClick = { nav.navigateUp() },
+            onClick = { nav.popBackStack(HomeDestination, false) },
             modifier = Modifier.padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
@@ -75,15 +70,14 @@ fun TransactionDetails(
     }
 }
 
-@Preview( showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, /*showBackground = true, backgroundColor = 0xFF121212*/)
-@Composable
-fun PreviewTransaction() {
-    BankAppTheme {
-        TransactionDetails(
-            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now()),
-            Entry("00000000-0000000000", TransactionType.TRANSFER_IN, 999, 200, LocalDateTime.now(), 1999, 1),
-            EmptyDestinationsNavigator
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES /*showBackground = true, backgroundColor = 0xFF121212*/)
+//@Composable
+//fun PreviewPostPayment() {
+//    BankAppTheme {
+//        PostPaymentScreen(
+//            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now()),
+//            EmptyDestinationsNavigator
+//        )
+//    }
+//}

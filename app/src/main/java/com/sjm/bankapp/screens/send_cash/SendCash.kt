@@ -46,7 +46,7 @@ import com.sjm.bankapp.screens.ConfirmDialog
 import com.sjm.bankapp.screens.GenericDialog
 import com.sjm.bankapp.screens.Subtitle
 import com.sjm.bankapp.screens.Title
-import com.sjm.bankapp.screens.destinations.PostTransactionScreenDestination
+import com.sjm.bankapp.screens.destinations.PostPaymentScreenDestination
 import com.sjm.bankapp.screens.errorText
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
@@ -89,7 +89,7 @@ fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
                 ConfirmDialog(title = "¿Confirmas esta transferencia?", onAccept = {
                     vm.onSendTransaction(onSuccess = { t ->
                         showConfirmDialog = false
-                        nav.navigate(PostTransactionScreenDestination(t))
+                        nav.navigate(PostPaymentScreenDestination(t))
                     }, onError = { code ->
                         showConfirmDialog = false
                         error = code
