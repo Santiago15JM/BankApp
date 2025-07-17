@@ -2,19 +2,17 @@ package com.sjm.bankapp.logic
 
 import com.sjm.bankapp.config.RetrofitHelper
 import com.sjm.bankapp.logic.models.Bill
-import com.sjm.bankapp.logic.models.BillQuote
+import com.sjm.bankapp.logic.models.Business
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
-import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
-import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
-import com.sjm.bankapp.logic.models.dao.LoginRequest
-import com.sjm.bankapp.logic.models.dao.LoginResponse
-import com.sjm.bankapp.logic.models.dao.TransactionRequest
-import com.sjm.bankapp.logic.models.dao.TransactionResponse
+import com.sjm.bankapp.logic.models.dto.ChangeEmailRequest
+import com.sjm.bankapp.logic.models.dto.ChangePasswordRequest
+import com.sjm.bankapp.logic.models.dto.ChangePhoneRequest
+import com.sjm.bankapp.logic.models.dto.LoginRequest
+import com.sjm.bankapp.logic.models.dto.LoginResponse
+import com.sjm.bankapp.logic.models.dto.TransactionRequest
+import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import retrofit2.Response
-import java.time.LocalDateTime
-import kotlin.random.Random
 
 object BankEnd {
     private val api = RetrofitHelper.getInstance()
@@ -27,29 +25,16 @@ object BankEnd {
         return api.makeTransaction(transaction)
     }
 
-    fun payBill(bill: Bill): TransactionResponse {
-//        Log.d("PAY_BILL", "Attempting Request")
-//        val res = TransactionResponse(Random.nextLong(), "Success")
-//        bill.id = res.transactionId
-//        ts.add(
-//            0, Transaction(
-//                bill.id,
-//                TransactionType.BILL,
-//                bill.cost,
-//                bill.customerId,
-//                bill.shopId,
-//                bill.date,
-//                50000
-//            )
-//        )
-//        return res
-        return TransactionResponse("AAA",LocalDateTime.now(), 0)
+    suspend fun getBusinesses(): List<Business> {
+        return api.getBusinesses().body()!!
     }
 
-    fun fetchBill(billCode: Int, shopID: Int): BillQuote {
-        return BillQuote(
-            Random.nextInt(100, 500), shopID, "Name Shop", Random.nextInt(from = 0, until = 1000000)
-        )
+    suspend fun fetchBill(businessId: Long, serviceId: String): Bill? {
+        return api.getBill(businessId, serviceId).body()
+    }
+
+    suspend fun payBill(bill: Bill): TransactionResponse {
+        return api.payBill(bill).body()!!
     }
 
     suspend fun getBalance(): Long {

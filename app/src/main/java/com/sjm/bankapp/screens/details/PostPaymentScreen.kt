@@ -27,6 +27,7 @@ import com.sjm.bankapp.ui.theme.BankAppTheme
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
+import com.sjm.bankend.models.TransactionState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -70,14 +71,14 @@ fun PostPaymentScreen(
     }
 }
 
-//@Preview(showBackground = true)
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES /*showBackground = true, backgroundColor = 0xFF121212*/)
-//@Composable
-//fun PreviewPostPayment() {
-//    BankAppTheme {
-//        PostPaymentScreen(
-//            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now()),
-//            EmptyDestinationsNavigator
-//        )
-//    }
-//}
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES /*showBackground = true, backgroundColor = 0xFF121212*/)
+@Composable
+fun PreviewPostPayment() {
+    BankAppTheme {
+        PostPaymentScreen(
+            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS),
+            EmptyDestinationsNavigator
+        )
+    }
+}

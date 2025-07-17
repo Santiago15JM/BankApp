@@ -10,7 +10,8 @@ import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.dao.TransactionRequest
+import com.sjm.bankapp.logic.models.dto.TransactionRequest
+import com.sjm.bankend.models.TransactionState
 import kotlinx.coroutines.launch
 
 class SendCashViewModel : ViewModel() {
@@ -58,6 +59,7 @@ class SendCashViewModel : ViewModel() {
                     senderId = request.senderId,
                     receiverId = request.receiverId,
                     date = response.body()!!.date,
+                    state = TransactionState.SUCCESS,
                 )
                 onSuccess(transaction)
             } else {

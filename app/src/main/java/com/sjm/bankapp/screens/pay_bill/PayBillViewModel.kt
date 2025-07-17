@@ -6,63 +6,67 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
-import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.models.Bill
-import com.sjm.bankapp.logic.models.BillQuote
-import com.sjm.bankapp.logic.models.dao.TransactionResponse
+import com.sjm.bankapp.logic.models.Business
+import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import kotlin.random.Random
 
 class PayBillViewModel : ViewModel() {
-    var shopID by mutableStateOf("")
+    var selectedBusiness by mutableStateOf<Business?>(null)
     var billCode by mutableStateOf("")
-    var quote: BillQuote? = null
-    var cost by mutableStateOf(0)
+    var businessList = mutableListOf<Business>()
+    var bill by mutableStateOf<Bill?>(null)
 
-    var fetchCostJob: Job by mutableStateOf(viewModelScope.launch { cancel() })
-    var isQuoteObtained by mutableStateOf(false)
-    var isFetchingQuote by mutableStateOf(false)
-        private set
+    var state by mutableStateOf(State.INITIAL)
+    var fetchCostJob: Job? = null
 
-    fun onPayBill(next: (Bill, TransactionResponse) -> Unit) {
-        if (shopID.isNotEmpty() && billCode.isNotEmpty() && !fetchCostJob.isActive) {
-            val bill = Bill(
-                customerId = LocalStorage.accountId,
-                shopId = Random.nextLong(),
-                cost = cost,
-                date = LocalDateTime.now()
-            )
-            val res = BankEnd.payBill(bill)
-            next(bill, res)
+    fun fetchBusinesses() {
+        viewModelScope.launch {
+            val businesses = BankEnd.getBusinesses()
+            businessList.addAll(businesses)
         }
     }
 
-    private suspend fun getBillQuote() {
-        if (shopID.isEmpty() or billCode.isEmpty()) return
+    private suspend fun getBill() {
+        bill = BankEnd.fetchBill(selectedBusiness!!.id, billCode)
 
-        isFetchingQuote = true
-        delay(200) // "Fetch delay"
-
-        quote = BankEnd.fetchBill(billCode.toInt(), shopID.toInt())
-        cost = quote!!.cost
-
-        isFetchingQuote = false
-        isQuoteObtained = true
-
+        state = if (bill == null) {
+            State.NOT_FOUND
+        } else {
+            State.FOUND
+        }
     }
 
     fun startFetchJob() {
-        isQuoteObtained = false
-        fetchCostJob.cancel()
+        fetchCostJob?.cancel()
+
+        if (selectedBusiness == null || billCode.isEmpty()) {
+            state = State.NOT_FOUND
+            return
+        }
+
         fetchCostJob = viewModelScope.launch {
-            delay(2_000)
-            getBillQuote()
+            state = State.FETCHING
+            delay(1_000) // Debounce time
+            getBill()
         }
     }
 
-    fun shouldEnableButton() = shopID.isNotEmpty() && billCode.isNotEmpty() && isQuoteObtained
+    fun payBill(next: (Bill, TransactionResponse) -> Unit) {
+        if (selectedBusiness != null && billCode.isNotEmpty() && state == State.FOUND && bill != null) {
+            viewModelScope.launch {
+                val res = BankEnd.payBill(bill!!)
+                next(bill!!, res)
+            }
+        }
+    }
+
+    fun shouldEnableButton() =
+        selectedBusiness != null && billCode.isNotEmpty() && state == State.FOUND
+}
+
+enum class State {
+    INITIAL, FETCHING, FOUND, NOT_FOUND
 }

@@ -28,6 +28,7 @@ import com.sjm.bankapp.ui.theme.BankAppTheme
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
+import com.sjm.bankend.models.TransactionState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -81,7 +82,7 @@ fun TransactionDetails(
 fun PreviewTransaction() {
     BankAppTheme {
         TransactionDetails(
-            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now()),
+            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS),
             Entry("00000000-0000000000", TransactionType.TRANSFER_IN, 999, 200, LocalDateTime.now(), 1999, 1),
             EmptyDestinationsNavigator
         )

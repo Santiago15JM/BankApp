@@ -1,17 +1,19 @@
 package com.sjm.bankapp.logic
 
+import com.sjm.bankapp.logic.models.Bill
+import com.sjm.bankapp.logic.models.Business
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.dao.ChangeEmailRequest
-import com.sjm.bankapp.logic.models.dao.ChangeEmailResponse
-import com.sjm.bankapp.logic.models.dao.ChangePasswordRequest
-import com.sjm.bankapp.logic.models.dao.ChangePasswordResponse
-import com.sjm.bankapp.logic.models.dao.ChangePhoneRequest
-import com.sjm.bankapp.logic.models.dao.ChangePhoneResponse
-import com.sjm.bankapp.logic.models.dao.LoginRequest
-import com.sjm.bankapp.logic.models.dao.LoginResponse
-import com.sjm.bankapp.logic.models.dao.TransactionRequest
-import com.sjm.bankapp.logic.models.dao.TransactionResponse
+import com.sjm.bankapp.logic.models.dto.ChangeEmailRequest
+import com.sjm.bankapp.logic.models.dto.ChangeEmailResponse
+import com.sjm.bankapp.logic.models.dto.ChangePasswordRequest
+import com.sjm.bankapp.logic.models.dto.ChangePasswordResponse
+import com.sjm.bankapp.logic.models.dto.ChangePhoneRequest
+import com.sjm.bankapp.logic.models.dto.ChangePhoneResponse
+import com.sjm.bankapp.logic.models.dto.LoginRequest
+import com.sjm.bankapp.logic.models.dto.LoginResponse
+import com.sjm.bankapp.logic.models.dto.TransactionRequest
+import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -44,4 +46,12 @@ interface BankEndApi {
     @POST("transactions/makeTransaction")
     suspend fun makeTransaction(@Body transactionRequest: TransactionRequest): Response<TransactionResponse>
 
+    @GET("business")
+    suspend fun getBusinesses(): Response<List<Business>>
+
+    @GET("bills/get-bill")
+    suspend fun getBill(@Query("businessId") businessId: Long, @Query("serviceId") serviceId: String): Response<Bill>
+
+    @POST("bills/pay-bill")
+    suspend fun payBill(@Body bill: Bill): Response<TransactionResponse>
 }
