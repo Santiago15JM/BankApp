@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 data class Transaction(
     val operationId: String,
     val amount: Int,
-    val senderId: Long,
-    val receiverId: Long,
+    val senderAccountId: Long,
+    val receiverAccountId: Long,
     val date: LocalDateTime,
     val state: TransactionState,
 ) : Serializable // TODO Migrate to Parcelables

@@ -29,7 +29,7 @@ class SavedAccountsViewModel: ViewModel() {
 
     fun editAccount(newDescription: String, newAccountID: Long) {
         selectedAccount?.description = newDescription
-        selectedAccount?.id = newAccountID
+        selectedAccount?.aId = newAccountID
         viewModelScope.launch {
             dao.upsert(selectedAccount!!)
         }

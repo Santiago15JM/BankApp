@@ -127,7 +127,7 @@ fun SavedAccountItem(
     ) {
         Column(Modifier.weight(1f)) {
             Text(text = account.description)
-            Text(text = "${account.id}")
+            Text(text = "${account.aId}")
         }
         IconButton(onClick = { onEditClick() }) {
             Icon(Icons.Default.Edit, "Edit")
@@ -199,7 +199,7 @@ fun EditDialog(
     account: SavedAccount, onDismissRequest: () -> Unit, onAccept: (String, Long) -> Unit
 ) {
     var description by remember { mutableStateOf(account.description) }
-    var id by remember { mutableStateOf(account.id.toString()) }
+    var id by remember { mutableStateOf(account.aId.toString()) }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card {

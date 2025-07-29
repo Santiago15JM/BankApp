@@ -10,6 +10,8 @@ import com.sjm.bankapp.logic.models.dto.ChangePasswordRequest
 import com.sjm.bankapp.logic.models.dto.ChangePhoneRequest
 import com.sjm.bankapp.logic.models.dto.LoginRequest
 import com.sjm.bankapp.logic.models.dto.LoginResponse
+import com.sjm.bankapp.logic.models.dto.NotificationTransactionDetail
+import com.sjm.bankapp.logic.models.dto.RegisterTokenRequest
 import com.sjm.bankapp.logic.models.dto.TransactionRequest
 import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import retrofit2.Response
@@ -17,8 +19,8 @@ import retrofit2.Response
 object BankEnd {
     private val api = RetrofitHelper.getInstance()
 
-    suspend fun getTransactionHistory(from: Int = 0): List<Entry>? {
-        return api.getTransactionHistory(LocalStorage.accountId, from).body()
+    suspend fun getTransactionHistory(accountId: Long, from: Int = 0): List<Entry>? {
+        return api.getTransactionHistory(accountId, from).body()
     }
 
     suspend fun sendCash(transaction: TransactionRequest): Response<TransactionResponse> {
@@ -38,7 +40,7 @@ object BankEnd {
     }
 
     suspend fun getBalance(): Long {
-        return api.getBalance(LocalStorage.accountId)
+        return api.getBalance(LocalStorage.userId)
     }
 
     suspend fun login(email: String, password: String): LoginResponse? {
@@ -62,5 +64,13 @@ object BankEnd {
 
     suspend fun getTransactionDetails(operationId: String): Transaction? {
         return api.getTransactionDetails(operationId).body()
+    }
+
+    suspend fun sendFCMToken(accountId: Long, token: String): Int {
+        return api.sendFCMToken(RegisterTokenRequest(accountId, token)).code()
+    }
+
+    suspend fun getTransactionNotificationDetail(operationId: String): NotificationTransactionDetail {
+        return api.getTransactionDetail(operationId).body()!!
     }
 }

@@ -52,8 +52,8 @@ fun PostPaymentScreen(
 
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(text = "Fecha: ${transaction.date.format(DateTimeFormatter.ofPattern("d/M/y HH:mm:ss"))}")
-                    Text(text = "Cuenta origen: ${transaction.senderId}")
-                    Text(text = "Cuenta destino: ${transaction.receiverId}")
+                    Text(text = "Cuenta origen: ${transaction.senderAccountId}")
+                    Text(text = "Cuenta destino: ${transaction.receiverAccountId}")
                     SelectionContainer {
                         Text("Id: ${transaction.operationId}")
                     }

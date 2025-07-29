@@ -25,6 +25,8 @@ import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.sjm.bankapp.config.ConnectivityObserver
 import com.sjm.bankapp.config.NetworkObserver
 import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.NotificationHelper.createNotificationChannel
+import com.sjm.bankapp.logic.RequestNotificationPermission
 import com.sjm.bankapp.screens.GenericDialog
 import com.sjm.bankapp.screens.NavGraphs
 import com.sjm.bankapp.ui.theme.BankAppTheme
@@ -59,6 +61,9 @@ fun BankApp() {
     val status by connectivityObserver.observe().collectAsState(
         initial = ConnectivityObserver.Status.Available
     )
+
+    RequestNotificationPermission()
+    createNotificationChannel(LocalContext.current)
 
     BankAppTheme {
         Surface {

@@ -12,6 +12,8 @@ import com.sjm.bankapp.logic.models.dto.ChangePhoneRequest
 import com.sjm.bankapp.logic.models.dto.ChangePhoneResponse
 import com.sjm.bankapp.logic.models.dto.LoginRequest
 import com.sjm.bankapp.logic.models.dto.LoginResponse
+import com.sjm.bankapp.logic.models.dto.NotificationTransactionDetail
+import com.sjm.bankapp.logic.models.dto.RegisterTokenRequest
 import com.sjm.bankapp.logic.models.dto.TransactionRequest
 import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import retrofit2.Response
@@ -19,6 +21,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BankEndApi {
@@ -54,4 +57,10 @@ interface BankEndApi {
 
     @POST("bills/pay-bill")
     suspend fun payBill(@Body bill: Bill): Response<TransactionResponse>
+
+    @POST("notifications/register")
+    suspend fun sendFCMToken(@Body registerTokenRequest: RegisterTokenRequest): Response<Unit>
+
+    @GET("transactions/get-notification-detail/{opId}")
+    suspend fun getTransactionDetail(@Path("opId") operationId: String): Response<NotificationTransactionDetail>
 }

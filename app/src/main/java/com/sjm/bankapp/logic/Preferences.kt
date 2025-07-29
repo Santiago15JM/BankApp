@@ -23,6 +23,16 @@ object Preferences {
         return context.dataStore.data.first()[stringPreferencesKey("auth_token")]
     }
 
+    suspend fun saveUserId(context: Context, id: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[longPreferencesKey("user_id")] = id
+        }
+    }
+
+    suspend fun getUserId(context: Context): Long? {
+        return context.dataStore.data.first()[longPreferencesKey("user_id")]
+    }
+
     suspend fun saveAccountId(context: Context, id: Long) {
         context.dataStore.edit { preferences ->
             preferences[longPreferencesKey("account_id")] = id

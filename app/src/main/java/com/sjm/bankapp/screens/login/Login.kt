@@ -73,25 +73,37 @@ fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
             fontWeight = FontWeight.Bold,
         )
 
-
         Spacer(Modifier.height(20.dp))
 
-        OutlinedTextField(value = vm.email,
+        OutlinedTextField(
+            value = vm.email,
             onValueChange = { if (!it.contains(' ')) vm.email = it },
             label = { Text("Usuario") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
-        PasswordTextField(value = vm.password,
+        PasswordTextField(
+            value = vm.password,
             onValueChange = { if (!it.contains(' ')) vm.password = it },
             label = "Contraseña",
-            onDone = { vm.logIn(navigator, c) })
+            onDone = {
+                vm.logIn(
+                    next = { navigator.navigate(HomeDestination) },
+                    context = c
+                )
+            })
 
         Spacer(Modifier.height(30.dp))
 
         Button(
-            onClick = { vm.logIn(navigator, c) }, contentPadding = PaddingValues(20.dp, 10.dp)
+            onClick = {
+                vm.logIn(
+                    next = { navigator.navigate(HomeDestination) },
+                    context = c
+                )
+            },
+            contentPadding = PaddingValues(20.dp, 10.dp)
         ) {
             Text("INGRESAR")
         }
@@ -105,11 +117,15 @@ fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
         when {
             vm.showLoading -> LoadingDialog()
 
-            vm.showNetworkError -> GenericDialog("Hubo un error con la red", icon = Icons.Default.Warning) {
+            vm.showNetworkError -> GenericDialog(
+                "Hubo un error con la red", icon = Icons.Default.Warning
+            ) {
                 vm.showNetworkError = false
             }
-            
-            vm.showBadCredentials -> GenericDialog("Credenciales incorrectas", icon = Icons.Default.Warning) {
+
+            vm.showBadCredentials -> GenericDialog(
+                "Credenciales incorrectas", icon = Icons.Default.Warning
+            ) {
                 vm.showBadCredentials = false
             }
         }

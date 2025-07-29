@@ -45,8 +45,8 @@ class SendCashViewModel : ViewModel() {
 
         val request = TransactionRequest(
             amount = amount.toInt(),
-            senderId = LocalStorage.accountId,
-            receiverId = if (usingSavedAccount) selectedAccount.value.id else receiverID.toLong()
+            senderAId = LocalStorage.accountId,
+            receiverAId = if (usingSavedAccount) selectedAccount.value.aId else receiverID.toLong()
         )
 
         viewModelScope.launch {
@@ -56,8 +56,8 @@ class SendCashViewModel : ViewModel() {
                 val transaction = Transaction(
                     operationId = response.body()!!.operationId,
                     amount = request.amount,
-                    senderId = request.senderId,
-                    receiverId = request.receiverId,
+                    senderAccountId = request.senderAId,
+                    receiverAccountId = request.receiverAId,
                     date = response.body()!!.date,
                     state = TransactionState.SUCCESS,
                 )

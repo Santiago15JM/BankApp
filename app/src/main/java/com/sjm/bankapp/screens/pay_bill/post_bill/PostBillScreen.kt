@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter
 
 @Destination
 @Composable
-fun PostBillScreen(bill: Bill, response: TransactionResponse, nav: DestinationsNavigator) {
+fun PostBillScreen(bill: Bill, transaction: TransactionResponse, businessName: String, nav: DestinationsNavigator) {
     Base {
         Title(text = "Pago enviado")
 
