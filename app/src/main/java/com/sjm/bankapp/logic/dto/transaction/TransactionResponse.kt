@@ -1,4 +1,4 @@
-package com.sjm.bankapp.logic.models.dto
+package com.sjm.bankapp.logic.dto.transaction
 
 import java.io.Serializable
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-package com.sjm.bankapp.screens
+package com.sjm.bankapp.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
@@ -162,7 +163,7 @@ fun Button(
     content: @Composable RowScope.() -> Unit
 ) {
     modifier.padding(20.dp)
-    androidx.compose.material.Button(
+    Button(
         onClick,
         modifier,
         enabled,

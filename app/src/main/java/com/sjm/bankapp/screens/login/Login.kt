@@ -31,11 +31,11 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.R
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.GenericDialog
-import com.sjm.bankapp.screens.LoadingDialog
-import com.sjm.bankapp.screens.PasswordTextField
 import com.sjm.bankapp.screens.destinations.HomeDestination
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.GenericDialog
+import com.sjm.bankapp.ui.LoadingDialog
+import com.sjm.bankapp.ui.PasswordTextField
 import com.sjm.bankapp.ui.theme.SurfaceDark
 import com.sjm.bankapp.ui.theme.SurfaceLight
 

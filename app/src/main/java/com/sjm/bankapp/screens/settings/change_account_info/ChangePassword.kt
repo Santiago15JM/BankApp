@@ -22,11 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.Card
-import com.sjm.bankapp.screens.PasswordTextField
-import com.sjm.bankapp.screens.Subtext
-import com.sjm.bankapp.screens.Subtitle
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.Card
+import com.sjm.bankapp.ui.PasswordTextField
+import com.sjm.bankapp.ui.Subtext
+import com.sjm.bankapp.ui.Subtitle
 import com.sjm.bankapp.ui.theme.emphasisTextColor
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 

@@ -14,19 +14,19 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
-import com.sjm.bankapp.screens.Base
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.GenericDialog
-import com.sjm.bankapp.screens.LoadingDialog
-import com.sjm.bankapp.screens.MenuOption
-import com.sjm.bankapp.screens.OptionsCard
-import com.sjm.bankapp.screens.Subtitle
-import com.sjm.bankapp.screens.Title
 import com.sjm.bankapp.screens.destinations.LoginDestination
 import com.sjm.bankapp.screens.destinations.ManageSavedAccountsDestination
 import com.sjm.bankapp.screens.settings.change_account_info.ChangeEmailDialog
 import com.sjm.bankapp.screens.settings.change_account_info.ChangePasswordDialog
 import com.sjm.bankapp.screens.settings.change_account_info.ChangePhoneDialog
+import com.sjm.bankapp.ui.Base
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.GenericDialog
+import com.sjm.bankapp.ui.LoadingDialog
+import com.sjm.bankapp.ui.MenuOption
+import com.sjm.bankapp.ui.OptionsCard
+import com.sjm.bankapp.ui.Subtitle
+import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import kotlinx.coroutines.runBlocking
 

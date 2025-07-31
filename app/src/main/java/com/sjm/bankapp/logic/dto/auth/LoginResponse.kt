@@ -1,4 +1,4 @@
-package com.sjm.bankapp.logic.models.dto
+package com.sjm.bankapp.logic.dto.auth
 
 data class LoginResponse(
     val token: String,

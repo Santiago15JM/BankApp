@@ -27,8 +27,8 @@ import com.sjm.bankapp.config.NetworkObserver
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.NotificationHelper.createNotificationChannel
 import com.sjm.bankapp.logic.RequestNotificationPermission
-import com.sjm.bankapp.screens.GenericDialog
 import com.sjm.bankapp.screens.NavGraphs
+import com.sjm.bankapp.ui.GenericDialog
 import com.sjm.bankapp.ui.theme.BankAppTheme
 
 class MainActivity : ComponentActivity() {

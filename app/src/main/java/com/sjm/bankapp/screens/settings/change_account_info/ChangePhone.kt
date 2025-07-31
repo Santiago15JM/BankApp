@@ -22,10 +22,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.Card
-import com.sjm.bankapp.screens.Subtext
-import com.sjm.bankapp.screens.Subtitle
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.Card
+import com.sjm.bankapp.ui.Subtext
+import com.sjm.bankapp.ui.Subtitle
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 
 @Composable

@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
+import com.sjm.bankapp.logic.dto.transaction.TransactionResponse
 import com.sjm.bankapp.logic.models.Bill
 import com.sjm.bankapp.logic.models.Business
-import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

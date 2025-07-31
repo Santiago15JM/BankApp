@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.dto.transaction.TransactionRequest
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.dto.TransactionRequest
 import com.sjm.bankend.models.TransactionState
 import kotlinx.coroutines.launch
 

@@ -10,15 +10,15 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.logic.LocalStorage
-import com.sjm.bankapp.screens.Balance
-import com.sjm.bankapp.screens.Base
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.MenuOption
-import com.sjm.bankapp.screens.OptionsCard
 import com.sjm.bankapp.screens.destinations.HistoryDestination
 import com.sjm.bankapp.screens.destinations.PayBillDestination
 import com.sjm.bankapp.screens.destinations.SendCashDestination
 import com.sjm.bankapp.screens.destinations.SettingsDestination
+import com.sjm.bankapp.ui.Balance
+import com.sjm.bankapp.ui.Base
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.MenuOption
+import com.sjm.bankapp.ui.OptionsCard
 
 @Destination
 @Composable

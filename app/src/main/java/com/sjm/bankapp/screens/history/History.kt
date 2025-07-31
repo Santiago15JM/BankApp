@@ -22,12 +22,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.TransactionType
-import com.sjm.bankapp.screens.Balance
-import com.sjm.bankapp.screens.Base
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.Card
-import com.sjm.bankapp.screens.Title
 import com.sjm.bankapp.screens.destinations.TransactionDetailsDestination
+import com.sjm.bankapp.ui.Balance
+import com.sjm.bankapp.ui.Base
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.Card
+import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.theme.Green
 import com.sjm.bankapp.ui.theme.Red
 import com.sjm.bankapp.ui.theme.secondaryBtnColor

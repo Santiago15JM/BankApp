@@ -1,4 +1,4 @@
-package com.sjm.bankapp.screens.pay_bill.post_bill
+package com.sjm.bankapp.screens.pay_bill
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -16,15 +16,15 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.dto.transaction.TransactionResponse
 import com.sjm.bankapp.logic.models.Bill
 import com.sjm.bankapp.logic.models.BillState
-import com.sjm.bankapp.logic.models.dto.TransactionResponse
-import com.sjm.bankapp.screens.Base
-import com.sjm.bankapp.screens.Button
-import com.sjm.bankapp.screens.Card
-import com.sjm.bankapp.screens.Subtitle
-import com.sjm.bankapp.screens.Title
 import com.sjm.bankapp.screens.destinations.HomeDestination
+import com.sjm.bankapp.ui.Base
+import com.sjm.bankapp.ui.Button
+import com.sjm.bankapp.ui.Card
+import com.sjm.bankapp.ui.Subtitle
+import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.theme.BankAppTheme
 import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.secondaryBtnColor

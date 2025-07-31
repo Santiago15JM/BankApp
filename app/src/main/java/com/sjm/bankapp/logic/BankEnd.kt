@@ -1,19 +1,19 @@
 package com.sjm.bankapp.logic
 
 import com.sjm.bankapp.config.RetrofitHelper
+import com.sjm.bankapp.logic.dto.auth.ChangeEmailRequest
+import com.sjm.bankapp.logic.dto.auth.ChangePasswordRequest
+import com.sjm.bankapp.logic.dto.auth.ChangePhoneRequest
+import com.sjm.bankapp.logic.dto.auth.LoginRequest
+import com.sjm.bankapp.logic.dto.auth.LoginResponse
+import com.sjm.bankapp.logic.dto.notification.NotificationTransactionDetail
+import com.sjm.bankapp.logic.dto.notification.RegisterTokenRequest
+import com.sjm.bankapp.logic.dto.transaction.TransactionRequest
+import com.sjm.bankapp.logic.dto.transaction.TransactionResponse
 import com.sjm.bankapp.logic.models.Bill
 import com.sjm.bankapp.logic.models.Business
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.logic.models.dto.ChangeEmailRequest
-import com.sjm.bankapp.logic.models.dto.ChangePasswordRequest
-import com.sjm.bankapp.logic.models.dto.ChangePhoneRequest
-import com.sjm.bankapp.logic.models.dto.LoginRequest
-import com.sjm.bankapp.logic.models.dto.LoginResponse
-import com.sjm.bankapp.logic.models.dto.NotificationTransactionDetail
-import com.sjm.bankapp.logic.models.dto.RegisterTokenRequest
-import com.sjm.bankapp.logic.models.dto.TransactionRequest
-import com.sjm.bankapp.logic.models.dto.TransactionResponse
 import retrofit2.Response
 
 object BankEnd {
