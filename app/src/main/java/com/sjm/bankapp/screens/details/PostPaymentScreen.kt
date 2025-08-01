@@ -14,10 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.navigation.HomeKey
-import com.sjm.bankapp.navigation.returnTo
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.Button
 import com.sjm.bankapp.ui.Card
@@ -33,11 +30,9 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun PostPaymentScreen(
-    transaction: Transaction, navStack: NavBackStack
+    transaction: Transaction, returnHome: () -> Unit
 ) {
-    BackHandler {
-        navStack.returnTo(HomeKey)
-    }
+    BackHandler(onBack = returnHome)
 
     Base {
         Title(text = "Pago realizado")
@@ -64,7 +59,7 @@ fun PostPaymentScreen(
         }
 
         Button(
-            onClick = { navStack.returnTo(HomeKey) },
+            onClick = returnHome,
             modifier = Modifier.padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
@@ -81,7 +76,7 @@ fun PreviewPostPayment() {
         PostPaymentScreen(
             Transaction(
                 "00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS
-            ), NavBackStack()
+            ), {}
         )
     }
 }

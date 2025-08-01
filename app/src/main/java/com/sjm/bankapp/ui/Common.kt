@@ -68,7 +68,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.sjm.bankapp.R
-import com.sjm.bankapp.logic.BankEnd.getBalance
 import com.sjm.bankapp.ui.theme.SurfaceDark
 import com.sjm.bankapp.ui.theme.SurfaceLight
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
@@ -126,13 +125,13 @@ fun Subtext(text: String, modifier: Modifier = Modifier, color: Color = Color.Un
 }
 
 @Composable
-fun Balance() {
+fun Balance(getBalance: suspend () -> String) {
     var showBalance by remember { mutableStateOf(false) }
     var balance by remember { mutableStateOf("espera") }
     LaunchedEffect(Unit) {
         balance = try {
-            getBalance().toString()
-        } catch (e: Exception) {
+            getBalance()
+        } catch (_: Exception) {
             "error"
         }
     }

@@ -35,8 +35,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavBackStack
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.models.SavedAccount
+import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.PostPaymentKey
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
@@ -52,7 +53,11 @@ import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.strokeColor
 
 @Composable
-fun SendCash(navStack: NavBackStack, vm: SendCashViewModel = viewModel()) {
+fun SendCash(
+    navigateTo: (NavType) -> Unit,
+    navigateBack: () -> Unit,
+    vm: SendCashViewModel = viewModel()
+) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     var error = 0
@@ -60,7 +65,7 @@ fun SendCash(navStack: NavBackStack, vm: SendCashViewModel = viewModel()) {
     Base {
         Title(text = "Enviar dinero")
 
-        Balance()
+        Balance { BankEnd.getBalance().toString() }
 
         Spacer(Modifier.weight(0.3F))
 
@@ -74,7 +79,7 @@ fun SendCash(navStack: NavBackStack, vm: SendCashViewModel = viewModel()) {
         )
 
         BottomButtonBar(
-            onCancel = { navStack.removeLastOrNull() },
+            onCancel = navigateBack,
             acceptText = "ENVIAR",
             isAcceptEnabled = vm.shouldEnableButton(),
             onAccept = {
@@ -87,7 +92,7 @@ fun SendCash(navStack: NavBackStack, vm: SendCashViewModel = viewModel()) {
                 ConfirmDialog(title = "¿Confirmas esta transferencia?", onAccept = {
                     vm.onSendTransaction(onSuccess = { t ->
                         showConfirmDialog = false
-                        navStack.add(PostPaymentKey(t))
+                        navigateTo(PostPaymentKey(t))
                     }, onError = { code ->
                         showConfirmDialog = false
                         error = code

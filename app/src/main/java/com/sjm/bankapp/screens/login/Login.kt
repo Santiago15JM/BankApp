@@ -27,9 +27,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.R
 import com.sjm.bankapp.navigation.HomeKey
+import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.ui.Button
 import com.sjm.bankapp.ui.GenericDialog
 import com.sjm.bankapp.ui.LoadingDialog
@@ -38,7 +38,7 @@ import com.sjm.bankapp.ui.theme.SurfaceDark
 import com.sjm.bankapp.ui.theme.SurfaceLight
 
 @Composable
-fun Login(navStack: NavBackStack, vm: LoginViewModel = viewModel()) {
+fun Login(navigateTo: (NavType) -> Unit, vm: LoginViewModel = viewModel()) {
     val c = LocalContext.current
 
     Column(
@@ -85,7 +85,7 @@ fun Login(navStack: NavBackStack, vm: LoginViewModel = viewModel()) {
             label = "Contraseña",
             onDone = {
                 vm.logIn(
-                    next = { navStack.add(HomeKey) },
+                    next = { navigateTo(HomeKey) },
                     context = c
                 )
             })
@@ -95,7 +95,7 @@ fun Login(navStack: NavBackStack, vm: LoginViewModel = viewModel()) {
         Button(
             onClick = {
                 vm.logIn(
-                    next = { navStack.add(HomeKey) },
+                    next = { navigateTo(HomeKey) },
                     context = c
                 )
             },

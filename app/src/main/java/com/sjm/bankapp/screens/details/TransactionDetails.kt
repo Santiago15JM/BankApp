@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.TransactionType
@@ -32,7 +31,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun TransactionDetails(
-    transaction: Transaction, entry: Entry, navStack: NavBackStack
+    transaction: Transaction, entry: Entry, navigateBack: () -> Unit
 ) {
     Base {
         Title("Transacción")
@@ -65,7 +64,7 @@ fun TransactionDetails(
         }
 
         Button(
-            onClick = { navStack.removeLastOrNull() },
+            onClick = navigateBack,
             modifier = Modifier.padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
@@ -74,15 +73,23 @@ fun TransactionDetails(
     }
 }
 
-@Preview( showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, /*showBackground = true, backgroundColor = 0xFF121212*/)
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES /*showBackground = true, backgroundColor = 0xFF121212*/)
 @Composable
 fun PreviewTransaction() {
     BankAppTheme {
         TransactionDetails(
-            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS),
-            Entry("00000000-0000000000", TransactionType.TRANSFER_IN, 999, 200, 200, LocalDateTime.now(), 1999, 1),
-            NavBackStack()
-        )
+            Transaction(
+                "00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS
+            ), Entry(
+                "00000000-0000000000",
+                TransactionType.TRANSFER_IN,
+                999,
+                200,
+                200,
+                LocalDateTime.now(),
+                1999,
+                1
+            ), {})
     }
 }

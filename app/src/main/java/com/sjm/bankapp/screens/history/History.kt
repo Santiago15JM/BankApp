@@ -18,9 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavBackStack
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.TransactionType
+import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.TransactionDetailsKey
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
@@ -34,14 +35,18 @@ import com.sjm.bankapp.ui.theme.textColor
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun History(navStack: NavBackStack, vm: HistoryViewModel = viewModel()) {
+fun History(
+    navigateTo: (NavType) -> Unit,
+    navigateBack: () -> Unit,
+    vm: HistoryViewModel = viewModel()
+) {
     val ls = rememberLazyListState()
 
     Base {
 
         Title("Historial de transacciones")
 
-        Balance()
+        Balance { BankEnd.getBalance().toString() }
 
         LazyColumn(
             state = ls,
@@ -53,7 +58,7 @@ fun History(navStack: NavBackStack, vm: HistoryViewModel = viewModel()) {
                 items(vm.history, key = { it.id }) { e ->
                     EntryItem(e) {
                         vm.getTransactionDetails(e.operationId, nextScreen = { t ->
-                            navStack.add(TransactionDetailsKey(t, e))
+                            navigateTo(TransactionDetailsKey(t, e))
                         })
                     }
                 }
@@ -70,8 +75,8 @@ fun History(navStack: NavBackStack, vm: HistoryViewModel = viewModel()) {
 
                         !vm.endOfHistory ->
                             TextButton(onClick = { vm.loadMore() }, Modifier.padding(10.dp)) {
-                            Text("Cargar más", color = textColor())
-                        }
+                                Text("Cargar más", color = textColor())
+                            }
 
                         else -> LastHistoryItem("Fin del historial")
                     }
@@ -90,7 +95,7 @@ fun History(navStack: NavBackStack, vm: HistoryViewModel = viewModel()) {
         }
 
         Button(
-            onClick = { navStack.removeLastOrNull() },
+            onClick = navigateBack,
             modifier = Modifier.padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {

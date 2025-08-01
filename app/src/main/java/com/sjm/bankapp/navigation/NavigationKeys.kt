@@ -7,32 +7,34 @@ import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
 import kotlinx.serialization.Serializable
 
-@Serializable
-object LoginKey : NavKey
+typealias NavType = NavKey
 
 @Serializable
-object HomeKey : NavKey
+object LoginKey : NavType
 
 @Serializable
-object TransactionHistoryKey : NavKey
+object HomeKey : NavType
 
 @Serializable
-data class TransactionDetailsKey(val transaction: Transaction, val entry: Entry) : NavKey
+object TransactionHistoryKey : NavType
 
 @Serializable
-object SendMoneyKey : NavKey
+data class TransactionDetailsKey(val transaction: Transaction, val entry: Entry) : NavType
 
 @Serializable
-data class PostPaymentKey(val transaction: Transaction) : NavKey
+object SendMoneyKey : NavType
 
 @Serializable
-object PayBillKey : NavKey
+data class PostPaymentKey(val transaction: Transaction) : NavType
 
 @Serializable
-data class PostBillKey(val bill: Bill, val transaction: TransactionResponse, val businessName: String) : NavKey
+object PayBillKey : NavType
 
 @Serializable
-object SettingsKey : NavKey
+data class PostBillKey(val bill: Bill, val transaction: TransactionResponse, val businessName: String) : NavType
 
 @Serializable
-object ManageContactsKey : NavKey
+object SettingsKey : NavType
+
+@Serializable
+object ManageContactsKey : NavType

@@ -36,8 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavBackStack
+import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.models.Business
+import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.PostBillKey
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
@@ -50,7 +51,11 @@ import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import com.sjm.bankapp.ui.theme.textColor
 
 @Composable
-fun PayBill(navStack: NavBackStack, vm: PayBillViewModel = viewModel()) {
+fun PayBill(
+    navigateTo: (NavType) -> Unit,
+    navigateBack: () -> Unit,
+    vm: PayBillViewModel = viewModel()
+) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showBusinessesDialog by remember { mutableStateOf(false) }
 
@@ -61,7 +66,7 @@ fun PayBill(navStack: NavBackStack, vm: PayBillViewModel = viewModel()) {
     Base {
         Title(text = "Pagar factura")
 
-        Balance()
+        Balance { BankEnd.getBalance().toString() }
 
         Spacer(Modifier.weight(1F))
 
@@ -124,7 +129,7 @@ fun PayBill(navStack: NavBackStack, vm: PayBillViewModel = viewModel()) {
         }
 
         BottomButtonBar(
-            onCancel = { navStack.removeLastOrNull() },
+            onCancel = navigateBack,
             acceptText = "PAGAR",
             onAccept = { showConfirmDialog = true },
             isAcceptEnabled = vm.shouldEnableButton()
@@ -136,7 +141,7 @@ fun PayBill(navStack: NavBackStack, vm: PayBillViewModel = viewModel()) {
                 onDismissRequest = { showConfirmDialog = false },
                 onAccept = {
                     vm.payBill(next = { bill, res ->
-                        navStack.add(PostBillKey(bill, res, vm.selectedBusiness!!.name))
+                        navigateTo(PostBillKey(bill, res, vm.selectedBusiness!!.name))
                     })
                     showConfirmDialog = false
                 }) {

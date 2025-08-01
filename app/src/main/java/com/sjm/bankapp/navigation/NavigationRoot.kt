@@ -7,7 +7,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -29,58 +28,63 @@ import com.sjm.bankapp.screens.settings.saved_accounts.ManageSavedAccounts
 fun NavigationRoot() {
     val navStack: NavBackStack = rememberNavBackStack(LoginKey)
 
+    val navigateTo: (NavType) -> Unit = { navStack.add(it) }
+    val navigateBack: () -> Unit = { navStack.removeLastOrNull() }
+    val returnHome: () -> Unit = { navStack.returnTo(HomeKey) }
+    val returnToLogin: () -> Unit = { navStack.returnTo(LoginKey) }
+
     NavDisplay(
         backStack = navStack, entryDecorators = listOf(
-        rememberSavedStateNavEntryDecorator(),
-        rememberViewModelStoreNavEntryDecorator(),
-        rememberSceneSetupNavEntryDecorator(),
-    ), transitionSpec = {
-        fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(300))
-    }, popTransitionSpec = {
-        fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-    }, entryProvider = entryProvider {
-        entry<LoginKey> {
-            Login(navStack)
-        }
+            rememberSavedStateNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+            rememberSceneSetupNavEntryDecorator(),
+        ), transitionSpec = {
+            fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(300))
+        }, popTransitionSpec = {
+            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+        }, entryProvider = entryProvider {
+            entry<LoginKey> {
+                Login(navigateTo)
+            }
 
-        entry<HomeKey> {
-            Home(navStack)
-        }
+            entry<HomeKey> {
+                Home(navigateTo, navigateBack)
+            }
 
-        entry<TransactionHistoryKey> {
-            History(navStack)
-        }
+            entry<TransactionHistoryKey> {
+                History(navigateTo, navigateBack)
+            }
 
-        entry<TransactionDetailsKey> {
-            TransactionDetails(it.transaction, it.entry, navStack)
-        }
+            entry<TransactionDetailsKey> {
+                TransactionDetails(it.transaction, it.entry, navigateBack)
+            }
 
-        entry<SendMoneyKey> {
-            SendCash(navStack)
-        }
+            entry<SendMoneyKey> {
+                SendCash(navigateTo, navigateBack)
+            }
 
-        entry<PostPaymentKey> {
-            PostPaymentScreen(it.transaction, navStack)
-        }
+            entry<PostPaymentKey> {
+                PostPaymentScreen(it.transaction, returnHome)
+            }
 
-        entry<PayBillKey> {
-            PayBill(navStack)
-        }
+            entry<PayBillKey> {
+                PayBill(navigateTo, navigateBack)
+            }
 
-        entry<PostBillKey> {
-            PostBillScreen(it.bill, it.transaction, it.businessName, navStack)
-        }
+            entry<PostBillKey> {
+                PostBillScreen(it.bill, it.transaction, it.businessName, returnHome)
+            }
 
-        entry<SettingsKey> {
-            Settings(navStack)
-        }
+            entry<SettingsKey> {
+                Settings(navigateTo, navigateBack, returnToLogin)
+            }
 
-        entry<ManageContactsKey> {
-            ManageSavedAccounts(navStack)
-        }
-    })
+            entry<ManageContactsKey> {
+                ManageSavedAccounts(navigateBack)
+            }
+        })
 }
 
-fun NavBackStack.returnTo(key: NavKey) {
+fun NavBackStack.returnTo(key: NavType) {
     retainAll(dropLastWhile { it::class != key::class })
 }

@@ -10,12 +10,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
-import com.sjm.bankapp.navigation.LoginKey
 import com.sjm.bankapp.navigation.ManageContactsKey
-import com.sjm.bankapp.navigation.returnTo
+import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.screens.settings.change_account_info.ChangeEmailDialog
 import com.sjm.bankapp.screens.settings.change_account_info.ChangePasswordDialog
 import com.sjm.bankapp.screens.settings.change_account_info.ChangePhoneDialog
@@ -31,7 +29,12 @@ import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun Settings(navStack: NavBackStack, vm: SettingsViewModel = viewModel()) {
+fun Settings(
+    navigateTo: (NavType) -> Unit,
+    navigateBack: () -> Unit,
+    returnToLogin: () -> Unit,
+    vm: SettingsViewModel = viewModel()
+) {
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
 
@@ -45,7 +48,7 @@ fun Settings(navStack: NavBackStack, vm: SettingsViewModel = viewModel()) {
         OptionsCard {
             MenuOption(
                 text = "Cuentas guardadas",
-                onClick = { navStack.add(ManageContactsKey) })
+                onClick = { navigateTo(ManageContactsKey) })
             MenuOption(text = "Cambiar correo", onClick = { vm.showChangeEmail = true })
             MenuOption(text = "Cambiar teléfono", onClick = { vm.showChangePhone = true })
             MenuOption(text = "Cambiar contraseña", onClick = { vm.showChangePassword = true })
@@ -55,7 +58,7 @@ fun Settings(navStack: NavBackStack, vm: SettingsViewModel = viewModel()) {
         }
 
         Button(
-            onClick = { navStack.removeLastOrNull() },
+            onClick = navigateBack,
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
             Text(text = "REGRESAR")
@@ -108,7 +111,7 @@ fun Settings(navStack: NavBackStack, vm: SettingsViewModel = viewModel()) {
                 "Debes volver a iniciar sesión"
             ) {
                 vm.showSuccess = false
-                navStack.returnTo(LoginKey)
+                returnToLogin()
             }
 
             vm.showSuccess -> GenericDialog("Se realizó el cambio") {
