@@ -277,7 +277,7 @@ fun DeleteDialog(
                     }
                     Spacer(Modifier.width(10.dp))
                     Button(
-                        onClick = { onAccept() }, modifier = Modifier.weight(1f)
+                        onClick = { onAccept(); onDismissRequest() }, modifier = Modifier.weight(1f)
                     ) {
                         Text("ELIMINAR")
                     }
