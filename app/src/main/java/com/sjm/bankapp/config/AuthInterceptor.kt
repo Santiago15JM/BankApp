@@ -21,7 +21,7 @@ class AuthInterceptor : Interceptor {
     }
 
     private fun isPublicRequest(request: Request): Boolean {
-        val url = request.url().toString()
+        val url = request.url.toString()
         return url.endsWith("auth/authenticate") || url.endsWith("auth/register")
     }
 }

@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "BankApp+"
-include ':app'
+include(":app")
