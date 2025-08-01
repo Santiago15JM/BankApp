@@ -35,10 +35,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.SavedAccount
-import com.sjm.bankapp.screens.destinations.PostPaymentScreenDestination
+import com.sjm.bankapp.navigation.PostPaymentKey
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.BottomButtonBar
@@ -52,9 +51,8 @@ import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.strokeColor
 
-@Destination
 @Composable
-fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
+fun SendCash(navStack: NavBackStack, vm: SendCashViewModel = viewModel()) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     var error = 0
@@ -76,7 +74,7 @@ fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
         )
 
         BottomButtonBar(
-            onCancel = { nav.navigateUp() },
+            onCancel = { navStack.removeLastOrNull() },
             acceptText = "ENVIAR",
             isAcceptEnabled = vm.shouldEnableButton(),
             onAccept = {
@@ -89,7 +87,7 @@ fun SendCash(nav: DestinationsNavigator, vm: SendCashViewModel = viewModel()) {
                 ConfirmDialog(title = "¿Confirmas esta transferencia?", onAccept = {
                     vm.onSendTransaction(onSuccess = { t ->
                         showConfirmDialog = false
-                        nav.navigate(PostPaymentScreenDestination(t))
+                        navStack.add(PostPaymentKey(t))
                     }, onError = { code ->
                         showConfirmDialog = false
                         error = code

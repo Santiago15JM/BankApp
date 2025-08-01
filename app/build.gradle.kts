@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -49,8 +50,13 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
     implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0")
+
+    val nav3version = "1.0.0-alpha06"
+    implementation("androidx.navigation3:navigation3-runtime:$nav3version")
+    implementation("androidx.navigation3:navigation3-ui:$nav3version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-navigation3:1.0.0-alpha04")
 
     implementation(platform("androidx.compose:compose-bom:2025.07.00"))
     implementation("androidx.compose.ui:ui")
@@ -60,17 +66,9 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 
-    implementation("androidx.navigation:navigation-compose:2.9.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.9.3")
-
-    val destinations_ver = "1.9.63"
-    implementation("io.github.raamcosta.compose-destinations:core:$destinations_ver")
-    implementation("io.github.raamcosta.compose-destinations:animations-core:$destinations_ver")
-    ksp("io.github.raamcosta.compose-destinations:ksp:$destinations_ver")
-
-    val room_version = "2.7.2"
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
+    val roomVersion = "2.7.2"
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")

@@ -7,22 +7,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.LocalStorage
-import com.sjm.bankapp.screens.destinations.HistoryDestination
-import com.sjm.bankapp.screens.destinations.PayBillDestination
-import com.sjm.bankapp.screens.destinations.SendCashDestination
-import com.sjm.bankapp.screens.destinations.SettingsDestination
+import com.sjm.bankapp.navigation.PayBillKey
+import com.sjm.bankapp.navigation.SendMoneyKey
+import com.sjm.bankapp.navigation.SettingsKey
+import com.sjm.bankapp.navigation.TransactionHistoryKey
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.Button
 import com.sjm.bankapp.ui.MenuOption
 import com.sjm.bankapp.ui.OptionsCard
 
-@Destination
 @Composable
-fun Home(navigator: DestinationsNavigator) {
+fun Home(navStack: NavBackStack) {
     Base {
         Text(
             "Bienvenido\n${LocalStorage.userName}",
@@ -37,11 +35,11 @@ fun Home(navigator: DestinationsNavigator) {
 
         OptionsCard(Modifier.weight(3f)) {
             Text("Menu principal", fontSize = 30.sp)
-            MenuOption("Consultar movimientos", { navigator.navigate(HistoryDestination) })
-            MenuOption("Enviar dinero", { navigator.navigate(SendCashDestination) })
-            MenuOption("Pagar factura", { navigator.navigate(PayBillDestination) })
-            MenuOption("Opciones de la cuenta", { navigator.navigate(SettingsDestination) })
-            Button({ navigator.navigateUp() }) {
+            MenuOption("Consultar movimientos", { navStack.add(TransactionHistoryKey) })
+            MenuOption("Enviar dinero", { navStack.add(SendMoneyKey) })
+            MenuOption("Pagar factura", { navStack.add(PayBillKey) })
+            MenuOption("Opciones de la cuenta", { navStack.add(SettingsKey) })
+            Button({ navStack.removeLastOrNull() }) {
                 Text("FINALIZAR SESION")
             }
         }

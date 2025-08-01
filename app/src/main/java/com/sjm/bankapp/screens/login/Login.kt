@@ -27,11 +27,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.R
-import com.sjm.bankapp.screens.destinations.HomeDestination
+import com.sjm.bankapp.navigation.HomeKey
 import com.sjm.bankapp.ui.Button
 import com.sjm.bankapp.ui.GenericDialog
 import com.sjm.bankapp.ui.LoadingDialog
@@ -39,10 +37,8 @@ import com.sjm.bankapp.ui.PasswordTextField
 import com.sjm.bankapp.ui.theme.SurfaceDark
 import com.sjm.bankapp.ui.theme.SurfaceLight
 
-@RootNavGraph(start = true)
-@Destination
 @Composable
-fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
+fun Login(navStack: NavBackStack, vm: LoginViewModel = viewModel()) {
     val c = LocalContext.current
 
     Column(
@@ -89,7 +85,7 @@ fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
             label = "Contraseña",
             onDone = {
                 vm.logIn(
-                    next = { navigator.navigate(HomeDestination) },
+                    next = { navStack.add(HomeKey) },
                     context = c
                 )
             })
@@ -99,7 +95,7 @@ fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
         Button(
             onClick = {
                 vm.logIn(
-                    next = { navigator.navigate(HomeDestination) },
+                    next = { navStack.add(HomeKey) },
                     context = c
                 )
             },

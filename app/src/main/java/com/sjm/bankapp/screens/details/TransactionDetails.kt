@@ -13,9 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
 import com.sjm.bankapp.logic.models.TransactionType
@@ -33,9 +31,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-@Destination
 fun TransactionDetails(
-    transaction: Transaction, entry: Entry, nav: DestinationsNavigator
+    transaction: Transaction, entry: Entry, navStack: NavBackStack
 ) {
     Base {
         Title("Transacción")
@@ -58,7 +55,8 @@ fun TransactionDetails(
                     Text("Tipo de movimiento: ${entry.type.text}")
                     Text("Cuenta origen: ${transaction.senderAccountId}")
                     Text("Cuenta destino: ${transaction.receiverAccountId}")
-                    Text("Saldo resultante: ${entry.resultingBalance}")
+                    Text("Monto: $${transaction.amount}")
+                    Text("Saldo resultante: $${entry.resultingBalance}")
                     SelectionContainer {
                         Text("Id: ${transaction.operationId}")
                     }
@@ -67,7 +65,7 @@ fun TransactionDetails(
         }
 
         Button(
-            onClick = { nav.navigateUp() },
+            onClick = { navStack.removeLastOrNull() },
             modifier = Modifier.padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
@@ -84,7 +82,7 @@ fun PreviewTransaction() {
         TransactionDetails(
             Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS),
             Entry("00000000-0000000000", TransactionType.TRANSFER_IN, 999, 200, 200, LocalDateTime.now(), 1999, 1),
-            EmptyDestinationsNavigator
+            NavBackStack()
         )
     }
 }

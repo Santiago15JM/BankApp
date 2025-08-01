@@ -10,12 +10,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
-import com.sjm.bankapp.screens.destinations.LoginDestination
-import com.sjm.bankapp.screens.destinations.ManageSavedAccountsDestination
+import com.sjm.bankapp.navigation.LoginKey
+import com.sjm.bankapp.navigation.ManageContactsKey
+import com.sjm.bankapp.navigation.returnTo
 import com.sjm.bankapp.screens.settings.change_account_info.ChangeEmailDialog
 import com.sjm.bankapp.screens.settings.change_account_info.ChangePasswordDialog
 import com.sjm.bankapp.screens.settings.change_account_info.ChangePhoneDialog
@@ -30,9 +30,8 @@ import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import kotlinx.coroutines.runBlocking
 
-@Destination
 @Composable
-fun Settings(navigator: DestinationsNavigator, vm: SettingsViewModel = viewModel()) {
+fun Settings(navStack: NavBackStack, vm: SettingsViewModel = viewModel()) {
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
 
@@ -44,17 +43,19 @@ fun Settings(navigator: DestinationsNavigator, vm: SettingsViewModel = viewModel
         Subtitle(text = "Tu cuenta:\n${LocalStorage.accountId}")
 
         OptionsCard {
-            MenuOption(text = "Cuentas guardadas",
-                onClick = { navigator.navigate(ManageSavedAccountsDestination) })
+            MenuOption(
+                text = "Cuentas guardadas",
+                onClick = { navStack.add(ManageContactsKey) })
             MenuOption(text = "Cambiar correo", onClick = { vm.showChangeEmail = true })
             MenuOption(text = "Cambiar teléfono", onClick = { vm.showChangePhone = true })
             MenuOption(text = "Cambiar contraseña", onClick = { vm.showChangePassword = true })
-            MenuOption(text = "Soporte",
+            MenuOption(
+                text = "Soporte",
                 onClick = { uriHandler.openUri("http://bankapp.com/support/") })
         }
 
         Button(
-            onClick = { navigator.navigateUp() },
+            onClick = { navStack.removeLastOrNull() },
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
             Text(text = "REGRESAR")
@@ -75,7 +76,8 @@ fun Settings(navigator: DestinationsNavigator, vm: SettingsViewModel = viewModel
 
             vm.showChangePhone -> {
                 val currentPhone = runBlocking { Preferences.getUserPhone(context)!! }
-                ChangePhoneDialog(currentPhone = currentPhone,
+                ChangePhoneDialog(
+                    currentPhone = currentPhone,
                     onDismissRequest = { vm.showChangePhone = false },
                     onAccept = { phone ->
                         vm.changePhone(phone, context)
@@ -106,7 +108,7 @@ fun Settings(navigator: DestinationsNavigator, vm: SettingsViewModel = viewModel
                 "Debes volver a iniciar sesión"
             ) {
                 vm.showSuccess = false
-                navigator.popBackStack(LoginDestination, false)
+                navStack.returnTo(LoginKey)
             }
 
             vm.showSuccess -> GenericDialog("Se realizó el cambio") {

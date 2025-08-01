@@ -36,10 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.Business
-import com.sjm.bankapp.screens.destinations.PostBillScreenDestination
+import com.sjm.bankapp.navigation.PostBillKey
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.BottomButtonBar
@@ -50,9 +49,8 @@ import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import com.sjm.bankapp.ui.theme.textColor
 
-@Destination
 @Composable
-fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
+fun PayBill(navStack: NavBackStack, vm: PayBillViewModel = viewModel()) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showBusinessesDialog by remember { mutableStateOf(false) }
 
@@ -126,7 +124,7 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
         }
 
         BottomButtonBar(
-            onCancel = { nav.navigateUp() },
+            onCancel = { navStack.removeLastOrNull() },
             acceptText = "PAGAR",
             onAccept = { showConfirmDialog = true },
             isAcceptEnabled = vm.shouldEnableButton()
@@ -138,7 +136,7 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
                 onDismissRequest = { showConfirmDialog = false },
                 onAccept = {
                     vm.payBill(next = { bill, res ->
-                        nav.navigate(PostBillScreenDestination(bill, res, vm.selectedBusiness!!.name))
+                        navStack.add(PostBillKey(bill, res, vm.selectedBusiness!!.name))
                     })
                     showConfirmDialog = false
                 }) {
@@ -156,7 +154,7 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
         }
 
         if (showBusinessesDialog) {
-            businessesDialog(
+            BusinessesDialog(
                 vm.businessList,
                 onSelect = {
                     vm.selectedBusiness = it; showBusinessesDialog = false; vm.startFetchJob()
@@ -167,7 +165,7 @@ fun PayBill(nav: DestinationsNavigator, vm: PayBillViewModel = viewModel()) {
 }
 
 @Composable
-fun businessesDialog(
+fun BusinessesDialog(
     businessList: List<Business>, onSelect: (Business) -> Unit = {}, onDismiss: () -> Unit = {}
 ) {
     Dialog(onDismiss) {

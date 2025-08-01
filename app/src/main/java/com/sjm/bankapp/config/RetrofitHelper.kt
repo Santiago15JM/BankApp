@@ -25,7 +25,8 @@ object RetrofitHelper {
     }
 }
 
-private val gson = GsonBuilder().registerTypeAdapter(
-    LocalDateTime::class.java,
-    JsonDeserializer { json, type, jsonDeserializationContext -> LocalDateTime.parse(json.asJsonPrimitive.asString) })
+private val gson = GsonBuilder()
+    .registerTypeAdapter(
+        LocalDateTime::class.java,
+        JsonDeserializer { json, type, jsonDeserializationContext -> LocalDateTime.parse(json.asJsonPrimitive.asString) })
     .create()

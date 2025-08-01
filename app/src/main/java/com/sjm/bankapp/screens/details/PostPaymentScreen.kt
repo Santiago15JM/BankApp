@@ -1,6 +1,7 @@
 package com.sjm.bankapp.screens.details
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankapp.screens.destinations.HomeDestination
+import com.sjm.bankapp.navigation.HomeKey
+import com.sjm.bankapp.navigation.returnTo
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.Button
 import com.sjm.bankapp.ui.Card
@@ -31,12 +31,14 @@ import com.sjm.bankend.models.TransactionState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Destination
 @Composable
 fun PostPaymentScreen(
-    transaction: Transaction,
-    nav: DestinationsNavigator,
+    transaction: Transaction, navStack: NavBackStack
 ) {
+    BackHandler {
+        navStack.returnTo(HomeKey)
+    }
+
     Base {
         Title(text = "Pago realizado")
 
@@ -62,7 +64,7 @@ fun PostPaymentScreen(
         }
 
         Button(
-            onClick = { nav.popBackStack(HomeDestination, false) },
+            onClick = { navStack.returnTo(HomeKey) },
             modifier = Modifier.padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(secondaryBtnColor())
         ) {
@@ -77,8 +79,9 @@ fun PostPaymentScreen(
 fun PreviewPostPayment() {
     BankAppTheme {
         PostPaymentScreen(
-            Transaction("00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS),
-            EmptyDestinationsNavigator
+            Transaction(
+                "00000000-0000000000", 999, 100, 200, LocalDateTime.now(), TransactionState.SUCCESS
+            ), NavBackStack()
         )
     }
 }

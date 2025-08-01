@@ -33,8 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation3.runtime.NavBackStack
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.BottomButtonBar
@@ -44,10 +43,8 @@ import com.sjm.bankapp.ui.Subtitle
 import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 
-//@RootNavGraph(start = true)
-@Destination
 @Composable
-fun ManageSavedAccounts(vm: SavedAccountsViewModel = viewModel(), nav: DestinationsNavigator) {
+fun ManageSavedAccounts(navStack: NavBackStack, vm: SavedAccountsViewModel = viewModel()) {
     var openAddDialog by remember { mutableStateOf(false) }
     var openEditDialog by remember { mutableStateOf(false) }
     var openDeleteDialog by remember { mutableStateOf(false) }
@@ -87,7 +84,7 @@ fun ManageSavedAccounts(vm: SavedAccountsViewModel = viewModel(), nav: Destinati
         }
 
         BottomButtonBar(
-            onCancel = { nav.navigateUp() },
+            onCancel = { navStack.removeLastOrNull() },
             acceptText = "AGREGAR",
             onAccept = { openAddDialog = true },
         )

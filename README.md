@@ -8,9 +8,11 @@ BankApp is a project which mimics a bank account app, that lets you make transac
 
 - Android
 - Jetpack Compose
+- Navigation3
 - Room
+- Datastore
 - Retrofit
-- Compose Destinations
+- Firebase messaging
 
 ## Getting Started
 
@@ -18,9 +20,9 @@ Copy the project and run it either in an emulator or a physical device.
 
 ### Prerequisites
 
-- Android Studio Hedgehog
+- Android Studio
 - Android Emulator or a device with Api Level 26+
-- A [BankEnd](https://github.com/Santiago15JM/BankEnd) api instance
+- A BankEnd api instance
 - A PostgreSQL instance
 
 ### Running the project
