@@ -12,7 +12,7 @@ import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.FCM
 import com.sjm.bankapp.logic.LocalStorage
 import kotlinx.coroutines.launch
-import java.net.SocketTimeoutException
+import java.io.IOException
 
 class LoginViewModel : ViewModel() {
     var email by mutableStateOf("")
@@ -56,7 +56,7 @@ class LoginViewModel : ViewModel() {
                         password = ""
                         sendNotificationToken()
                     }
-                } catch (_: SocketTimeoutException) {
+                } catch (_: IOException) {
                     showNetworkError = true
                 }
 
