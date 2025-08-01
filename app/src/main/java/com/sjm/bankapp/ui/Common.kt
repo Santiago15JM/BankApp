@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActionScope
@@ -78,10 +81,11 @@ fun Base(content: @Composable() (ColumnScope.() -> Unit)) {
             .fillMaxSize()
             .paint(
                 painter = painterResource(R.drawable.home_bk),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.FillHeight,
                 colorFilter = if (isSystemInDarkTheme()) ColorFilter.tint(SurfaceDark)
                 else ColorFilter.tint(SurfaceLight)
-            ),
+            )
+            .windowInsetsPadding(WindowInsets.systemBars),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         content = content
@@ -308,7 +312,8 @@ fun PasswordTextField(
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
-    OutlinedTextField(value = value,
+    OutlinedTextField(
+        value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
         singleLine = true,
@@ -318,7 +323,8 @@ fun PasswordTextField(
         ),
         keyboardActions = KeyboardActions(onDone = onDone),
         trailingIcon = {
-            IconButton(onClick = { passwordVisibility = !passwordVisibility },
+            IconButton(
+                onClick = { passwordVisibility = !passwordVisibility },
                 modifier = Modifier.focusProperties { canFocus = false }) {
                 VisibilityIcon(show = passwordVisibility)
             }
@@ -360,6 +366,17 @@ fun GenericDialog(
             }
         }
     }
+}
+
+@Composable
+fun NoNetworkDialog(onClick: () -> Unit) {
+    GenericDialog(
+        text = "No tienes conexión a internet",
+        subtext = "Restablece tu conexión o intenta mas tarde",
+        buttonText = "SALIR",
+        onButtonClick = onClick,
+        onDismissRequest = {},
+    )
 }
 
 fun errorText(code: Int) = when (code) {

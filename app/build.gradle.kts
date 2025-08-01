@@ -63,8 +63,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.3")
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-
     val destinations_ver = "1.9.63"
     implementation("io.github.raamcosta.compose-destinations:core:$destinations_ver")
     implementation("io.github.raamcosta.compose-destinations:animations-core:$destinations_ver")

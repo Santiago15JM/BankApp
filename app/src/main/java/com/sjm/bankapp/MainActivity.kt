@@ -1,9 +1,10 @@
 package com.sjm.bankapp
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -28,16 +29,19 @@ import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.NotificationHelper.createNotificationChannel
 import com.sjm.bankapp.logic.RequestNotificationPermission
 import com.sjm.bankapp.screens.NavGraphs
-import com.sjm.bankapp.ui.GenericDialog
+import com.sjm.bankapp.ui.NoNetworkDialog
 import com.sjm.bankapp.ui.theme.BankAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         LocalStorage.instantiateDB(applicationContext)
+
+        enableEdgeToEdge()
         setContent {
-            BankApp()
+            BankAppTheme {
+                BankApp()
+            }
         }
     }
 }
@@ -65,26 +69,19 @@ fun BankApp() {
     RequestNotificationPermission()
     createNotificationChannel(LocalContext.current)
 
-    BankAppTheme {
-        Surface {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root, engine = navHostEngine
-                )
-                val c = LocalContext.current as Activity
-                if (status != ConnectivityObserver.Status.Available) {
-                    GenericDialog(
-                        text = "No tienes conexión a internet",
-                        subtext = "Restablece tu conexión o intenta mas tarde",
-                        buttonText = "SALIR",
-                        onButtonClick = { c.finish() },
-                        onDismissRequest = {},
-                    )
-                }
+    Surface {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            DestinationsNavHost(
+                navGraph = NavGraphs.root,
+                engine = navHostEngine,
+            )
+            val a = LocalActivity.current
+            if (status != ConnectivityObserver.Status.Available) {
+                NoNetworkDialog(onClick = { a?.finish() })
             }
         }
     }

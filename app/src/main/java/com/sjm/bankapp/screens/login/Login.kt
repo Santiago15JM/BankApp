@@ -52,7 +52,7 @@ fun Login(navigator: DestinationsNavigator, vm: LoginViewModel = viewModel()) {
             .fillMaxSize()
             .paint(
                 painter = painterResource(R.drawable.login_bk),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.FillHeight,
                 colorFilter = if (isSystemInDarkTheme()) ColorFilter.tint(SurfaceDark)
                 else ColorFilter.tint(SurfaceLight)
             )
