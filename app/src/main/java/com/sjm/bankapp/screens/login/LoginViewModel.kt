@@ -10,7 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
 import com.sjm.bankapp.logic.FCM
-import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.Session
+import com.sjm.bankapp.logic.dto.auth.SessionDetails
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -42,19 +43,8 @@ class LoginViewModel : ViewModel() {
                         Toast.makeText(context, "Credenciales invalidas", Toast.LENGTH_SHORT).show()
                         showBadCredentials = true
                     } else {
-                        LocalStorage.saveLoginDetails(
-                            context,
-                            response.token,
-                            response.uid,
-                            response.aid,
-                            response.name,
-                            email,
-                            response.phone
-                        )
-                        next()
-                        email = ""
-                        password = ""
-                        sendNotificationToken()
+                        val sessionDetails = SessionDetails(response, email)
+                        onLoginSuccess(sessionDetails, next, context)
                     }
                 } catch (_: IOException) {
                     showNetworkError = true
@@ -65,11 +55,24 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    suspend fun onLoginSuccess(sessionDetails: SessionDetails, next: () -> Unit, context: Context) {
+        Session.saveSessionDetails(
+            context,
+            sessionDetails
+        )
+
+        Session.startTimeoutJob()
+        next()
+        email = ""
+        password = ""
+        sendNotificationToken()
+    }
+
     suspend fun sendNotificationToken() {
         val token = FCM.getFCMToken()
         if (token == null) return
 
-        val res = BankEnd.sendFCMToken(LocalStorage.userId, token)
+        val res = BankEnd.sendFCMToken(Session.userId, token)
 
         if (res != 200) Log.e("LOGIN", "Couldn't register notifications token $res")
         else Log.i("LOGIN", "Successfully registered notifications token")

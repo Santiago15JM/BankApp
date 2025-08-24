@@ -1,17 +1,29 @@
 package com.sjm.bankapp.screens.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInQuint
+import androidx.compose.animation.core.EaseOutQuint
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sjm.bankapp.logic.LocalStorage
 import com.sjm.bankapp.logic.Preferences
+import com.sjm.bankapp.logic.Session
 import com.sjm.bankapp.navigation.ManageContactsKey
 import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.screens.settings.change_account_info.ChangeEmailDialog
@@ -38,23 +50,44 @@ fun Settings(
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
 
+    var animate by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        animate = true
+    }
+
+    val enterAnimation =
+        fadeIn(tween(durationMillis = 300)) + scaleIn(
+            animationSpec = tween(
+                300,
+                easing = EaseOutQuint
+            ), initialScale = 0.8F
+        )
+    val elevation by animateDpAsState(
+        if (animate) 8.dp else 0.dp,
+        animationSpec = tween(400, easing = EaseInQuint)
+    )
+
     Base {
         Title(text = "Opciones")
 
         Spacer(Modifier.weight(1f))
 
-        Subtitle(text = "Tu cuenta:\n${LocalStorage.accountId}")
+        Subtitle(text = "Tu cuenta:\n${Session.accountId}")
 
-        OptionsCard {
-            MenuOption(
-                text = "Cuentas guardadas",
-                onClick = { navigateTo(ManageContactsKey) })
-            MenuOption(text = "Cambiar correo", onClick = { vm.showChangeEmail = true })
-            MenuOption(text = "Cambiar teléfono", onClick = { vm.showChangePhone = true })
-            MenuOption(text = "Cambiar contraseña", onClick = { vm.showChangePassword = true })
-            MenuOption(
-                text = "Soporte",
-                onClick = { uriHandler.openUri("http://bankapp.com/support/") })
+        AnimatedVisibility(
+            visible = animate, enter = enterAnimation
+        ) {
+            OptionsCard(elevation = elevation) {
+                MenuOption(
+                    text = "Cuentas guardadas",
+                    onClick = { navigateTo(ManageContactsKey) })
+                MenuOption(text = "Cambiar correo", onClick = { vm.showChangeEmail = true })
+                MenuOption(text = "Cambiar teléfono", onClick = { vm.showChangePhone = true })
+                MenuOption(text = "Cambiar contraseña", onClick = { vm.showChangePassword = true })
+                MenuOption(
+                    text = "Soporte",
+                    onClick = { uriHandler.openUri("http://bankapp.com/support/") })
+            }
         }
 
         Button(

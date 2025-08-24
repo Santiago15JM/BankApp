@@ -1,5 +1,12 @@
 package com.sjm.bankapp.screens.pay_bill
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInQuint
+import androidx.compose.animation.core.EaseOutQuint
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +44,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sjm.bankapp.logic.BankEnd
+import com.sjm.bankapp.logic.SoundManager
 import com.sjm.bankapp.logic.models.Business
 import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.PostBillKey
@@ -45,8 +53,10 @@ import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.BottomButtonBar
 import com.sjm.bankapp.ui.Card
 import com.sjm.bankapp.ui.ConfirmDialog
+import com.sjm.bankapp.ui.GenericDialog
 import com.sjm.bankapp.ui.Subtitle
 import com.sjm.bankapp.ui.Title
+import com.sjm.bankapp.ui.errorText
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import com.sjm.bankapp.ui.theme.textColor
 
@@ -58,10 +68,28 @@ fun PayBill(
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showBusinessesDialog by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var error = 0
 
-    LaunchedEffect(null) {
+    var animate by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
         vm.fetchBusinesses()
+        animate = true
     }
+
+    val enterAnimation =
+        fadeIn(tween(durationMillis = 300)) + scaleIn(
+            animationSpec = tween(
+                300,
+                easing = EaseOutQuint
+            ), initialScale = 0.8F
+        )
+
+    val elevation by animateDpAsState(
+        if (animate) 8.dp else 0.dp,
+        animationSpec = tween(400, easing = EaseInQuint)
+    )
 
     Base {
         Title(text = "Pagar factura")
@@ -79,51 +107,53 @@ fun PayBill(
             }
         )
 
-        Card(modifier = Modifier.padding(horizontal = 20.dp)) {
-            Column(Modifier.padding(20.dp)) {
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp), onClick = {
-                        showBusinessesDialog = true
-                    }) {
-                    Text(
-                        text = if (vm.selectedBusiness == null) "Selecciona un establecimiento" else vm.selectedBusiness!!.name,
-                        color = textColor()
-                    )
-                }
-
-                OutlinedTextField(
-                    value = vm.billCode,
-                    label = {
+        AnimatedVisibility(animate, enter = enterAnimation) {
+            Card(modifier = Modifier.padding(horizontal = 20.dp), elevation = elevation) {
+                Column(Modifier.padding(20.dp)) {
+                    OutlinedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(54.dp), onClick = {
+                            showBusinessesDialog = true
+                        }) {
                         Text(
-                            "Referencia de la factura",
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            text = if (vm.selectedBusiness == null) "Selecciona un establecimiento" else vm.selectedBusiness!!.name,
+                            color = textColor()
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done, keyboardType = KeyboardType.Number
-                    ),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
-                    onValueChange = {
-                        if (it.isDigitsOnly()) vm.billCode = it
-                        vm.startFetchJob()
-                    },
-                )
+                    }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        "Valor: $${if (vm.bill != null && vm.billCode.isNotEmpty()) vm.bill?.cost else "N.A"}",
-                        Modifier.padding(top = 10.dp)
+                    OutlinedTextField(
+                        value = vm.billCode,
+                        label = {
+                            Text(
+                                "Referencia de la factura",
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done, keyboardType = KeyboardType.Number
+                        ),
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                        onValueChange = {
+                            if (it.isDigitsOnly()) vm.billCode = it
+                            vm.startFetchJob()
+                        },
                     )
-                    if (vm.state == State.FETCHING) CircularProgressIndicator(Modifier.size(18.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Valor: $${if (vm.bill != null && vm.billCode.isNotEmpty()) vm.bill?.cost else "N.A"}",
+                            Modifier.padding(top = 10.dp)
+                        )
+                        if (vm.state == State.FETCHING) CircularProgressIndicator(Modifier.size(18.dp))
+                    }
                 }
             }
         }
@@ -135,14 +165,19 @@ fun PayBill(
             isAcceptEnabled = vm.shouldEnableButton()
         )
 
-        if (showConfirmDialog) {
-            ConfirmDialog(
+        when {
+            showConfirmDialog -> ConfirmDialog(
                 title = "¿Confirmas realizar el pago de la factura?",
                 onDismissRequest = { showConfirmDialog = false },
                 onAccept = {
-                    vm.payBill(next = { bill, res ->
-                        navigateTo(PostBillKey(bill, res, vm.selectedBusiness!!.name))
-                    })
+                    vm.payBill(
+                        next = { bill, res ->
+                            navigateTo(PostBillKey(bill, res, vm.selectedBusiness!!.name))
+                        },
+                        onError = { code ->
+                            error = code
+                            showError = true
+                        })
                     showConfirmDialog = false
                 }) {
                 Text(
@@ -155,6 +190,14 @@ fun PayBill(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+
+            showError -> {
+                GenericDialog(
+                    text = "Ocurrió un error",
+                    subtext = errorText(error),
+                    onDismissRequest = { showError = false })
+                SoundManager.play(SoundManager.Sounds.ATTENTION)
             }
         }
 

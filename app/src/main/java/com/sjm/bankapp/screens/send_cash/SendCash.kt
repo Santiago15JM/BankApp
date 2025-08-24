@@ -1,11 +1,18 @@
 package com.sjm.bankapp.screens.send_cash
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInQuint
+import androidx.compose.animation.core.EaseOutQuint
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +30,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +40,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sjm.bankapp.logic.BankEnd
+import com.sjm.bankapp.logic.Session
+import com.sjm.bankapp.logic.SoundManager
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.PostPaymentKey
@@ -50,17 +61,28 @@ import com.sjm.bankapp.ui.Title
 import com.sjm.bankapp.ui.errorText
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
+import com.sjm.bankapp.ui.theme.errorColor
 import com.sjm.bankapp.ui.theme.strokeColor
 
 @Composable
 fun SendCash(
-    navigateTo: (NavType) -> Unit,
-    navigateBack: () -> Unit,
-    vm: SendCashViewModel = viewModel()
+    navigateTo: (NavType) -> Unit, navigateBack: () -> Unit, vm: SendCashViewModel = viewModel()
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     var error = 0
+
+    var animate by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { animate = true }
+    val enterAnimation = fadeIn(tween(durationMillis = 300)) + scaleIn(
+        animationSpec = tween(
+            300, easing = EaseOutQuint
+        ), initialScale = 0.8F
+    )
+
+    val elevation by animateDpAsState(
+        if (animate) 8.dp else 0.dp, animationSpec = tween(400, easing = EaseInQuint)
+    )
 
     Base {
         Title(text = "Enviar dinero")
@@ -69,14 +91,19 @@ fun SendCash(
 
         Spacer(Modifier.weight(0.3F))
 
-        Subtitle(text = "Cuentas", modifier = Modifier.padding(20.dp))
+        AnimatedVisibility(
+            animate, enter = fadeIn(tween(400, delayMillis = 100, easing = EaseInQuint))
+        ) {
+            Subtitle(text = "Cuentas", modifier = Modifier.padding(20.dp))
+        }
 
-        TypeOfAccountSelector(
-            vm,
-            Modifier
-                .weight(1F)
-                .padding(horizontal = 20.dp)
-        )
+        AnimatedVisibility(animate, enter = enterAnimation) {
+            TypeOfAccountSelector(
+                vm, Modifier
+                    .fillMaxHeight(0.6F)
+                    .padding(horizontal = 20.dp), elevation
+            )
+        }
 
         BottomButtonBar(
             onCancel = navigateBack,
@@ -113,7 +140,11 @@ fun SendCash(
             }
 
             showError -> {
-                GenericDialog(text = errorText(error), onDismissRequest = { showError = false })
+                GenericDialog(
+                    text = "Ocurrió un error",
+                    subtext = errorText(error),
+                    onDismissRequest = { showError = false })
+                SoundManager.play(SoundManager.Sounds.ATTENTION)
             }
         }
     }
@@ -121,9 +152,9 @@ fun SendCash(
 
 @Composable
 fun TypeOfAccountSelector(
-    vm: SendCashViewModel, modifier: Modifier = Modifier
+    vm: SendCashViewModel, modifier: Modifier = Modifier, elevation: Dp = 8.dp
 ) {
-    Card(modifier) {
+    Card(modifier, elevation = elevation) {
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
@@ -175,19 +206,26 @@ fun TypeOfAccountSelector(
 
 @Composable
 fun SavedAccountsPanel(vm: SendCashViewModel) {
-    OutlinedTextField(
-        vm.amount,
-        { if (it.isDigitsOnly()) vm.amount = it },
-        label = { Text("Monto") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        singleLine = true,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
-    )
-    SavedAccountsList(vm.savedAccounts, vm.selectedAccount.value, onSelect = {
-        vm.selectedAccount.value = it
-    })
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)) {
+        OutlinedTextField(
+            vm.amount,
+            { if (it.isDigitsOnly()) vm.amount = it },
+            label = { Text("Monto") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            isError = vm.isAmountInvalid(),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+
+        AnimatedVisibility(vm.isAmountInvalid()) {
+            Text("No tienes suficiente dinero", color = errorColor())
+        }
+
+        SavedAccountsList(vm.savedAccounts, vm.selectedAccount.value, onSelect = {
+            vm.selectedAccount.value = it
+        })
+    }
 }
 
 @Composable
@@ -199,7 +237,6 @@ fun SavedAccountsList(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp),
     ) {
         RadioGroup(
             savedAccounts, selection = selectedAccount
@@ -245,11 +282,12 @@ fun SavedAccountItem(text: String, selected: Boolean, onClick: () -> Unit) {
 @Composable
 fun NonSavedPanel(vm: SendCashViewModel) {
     Column(
-        Modifier
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp), verticalArrangement = Arrangement.SpaceBetween
+            .padding(20.dp)
     ) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             OutlinedTextField(
                 value = vm.amount,
                 onValueChange = { if (it.isDigitsOnly()) vm.amount = it },
@@ -258,16 +296,28 @@ fun NonSavedPanel(vm: SendCashViewModel) {
                     imeAction = ImeAction.Next, keyboardType = KeyboardType.Number
                 ),
                 singleLine = true,
+                isError = if (vm.amount.isBlank()) false else vm.amount.toLong() > vm.funds,
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            AnimatedVisibility(vm.isAmountInvalid()) {
+                Text("No tienes suficiente dinero", color = errorColor())
+            }
+
             OutlinedTextField(
                 value = vm.receiverID,
                 onValueChange = { if (it.isDigitsOnly()) vm.receiverID = it },
                 label = { Text("Cuenta destino") },
                 singleLine = true,
+                isError = vm.receiverID == Session.accountId.toString(),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
+
+            AnimatedVisibility(vm.receiverID == Session.accountId.toString()) {
+                Text("No puedes enviar dinero a tu propia cuenta", color = errorColor())
+            }
+
             AnimatedVisibility(vm.saveAccount) {
                 OutlinedTextField(
                     value = vm.description,

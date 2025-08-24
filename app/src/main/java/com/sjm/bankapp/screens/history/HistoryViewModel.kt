@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
-import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.Session
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ class HistoryViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                val res = BankEnd.getTransactionHistory(LocalStorage.accountId) ?: return@launch
+                val res = BankEnd.getTransactionHistory(Session.accountId) ?: return@launch
                 history.addAll(res)
                 if (res.count() < 10) endOfHistory = true
 
@@ -40,7 +40,7 @@ class HistoryViewModel : ViewModel() {
         viewModelScope.launch {
             loading = true
             try {
-                val res = BankEnd.getTransactionHistory(LocalStorage.accountId,page) ?: return@launch
+                val res = BankEnd.getTransactionHistory(Session.accountId,page) ?: return@launch
                 history.addAll(res)
                 if (res.isEmpty() || res.count() < 10) endOfHistory = true
                 page++

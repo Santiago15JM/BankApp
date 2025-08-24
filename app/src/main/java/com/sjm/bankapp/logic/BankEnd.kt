@@ -35,12 +35,12 @@ object BankEnd {
         return api.getBill(businessId, serviceId).body()
     }
 
-    suspend fun payBill(bill: Bill): TransactionResponse {
-        return api.payBill(bill).body()!!
+    suspend fun payBill(bill: Bill): Response<TransactionResponse> {
+        return api.payBill(bill)
     }
 
     suspend fun getBalance(): Long {
-        return api.getBalance(LocalStorage.userId)
+        return api.getBalance(Session.userId)
     }
 
     suspend fun login(email: String, password: String): LoginResponse? {

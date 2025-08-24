@@ -1,6 +1,6 @@
 package com.sjm.bankapp.config
 
-import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.Session
 import okhttp3.Interceptor
 import okhttp3.Request
 
@@ -14,7 +14,7 @@ class AuthInterceptor : Interceptor {
         }
 
         val newRequest: Request = originalRequest.newBuilder()
-            .header("Authorization", "Bearer ${LocalStorage.authToken}")
+            .header("Authorization", "Bearer ${Session.authToken}")
             .build()
 
         return chain.proceed(newRequest)

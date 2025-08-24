@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.BankEnd
-import com.sjm.bankapp.logic.LocalStorage
+import com.sjm.bankapp.logic.Session
 import com.sjm.bankapp.logic.dto.transaction.TransactionRequest
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.logic.models.Transaction
@@ -15,8 +15,10 @@ import com.sjm.bankend.models.TransactionState
 import kotlinx.coroutines.launch
 
 class SendCashViewModel : ViewModel() {
-    private var dao = LocalStorage.getSavedAccountsDao()
+    private var dao = Session.getSavedAccountsDao()
     var amount by mutableStateOf("")
+    var funds = 0L
+        private set
 
     //Saved Account
     var savedAccounts: MutableList<SavedAccount> = mutableStateListOf()
@@ -31,6 +33,7 @@ class SendCashViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
+            funds = BankEnd.getBalance()
             dao.getAll().collect {
                 savedAccounts.clear()
                 savedAccounts.addAll(it)
@@ -45,7 +48,7 @@ class SendCashViewModel : ViewModel() {
 
         val request = TransactionRequest(
             amount = amount.toInt(),
-            senderAId = LocalStorage.accountId,
+            senderAId = Session.accountId,
             receiverAId = if (usingSavedAccount) selectedAccount.value.aId else receiverID.toLong()
         )
 
@@ -74,9 +77,14 @@ class SendCashViewModel : ViewModel() {
         }
     }
 
+    fun isAmountInvalid(): Boolean = if (amount.isBlank()) false else amount.toLong() > funds
+
     fun shouldEnableButton(): Boolean = when {
         amount.isEmpty() -> false
+        amount.toLong() > funds -> false
+        usingSavedAccount and (selectedAccount.value.aId == Session.accountId) -> false
         usingSavedAccount and savedAccounts.isNotEmpty() -> true
+        !usingSavedAccount and (receiverID == Session.accountId.toString()) -> false
         !usingSavedAccount and receiverID.isNotEmpty() -> true
         else -> false
     }

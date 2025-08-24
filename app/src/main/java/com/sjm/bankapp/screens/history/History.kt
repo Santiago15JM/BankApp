@@ -1,13 +1,15 @@
 package com.sjm.bankapp.screens.history
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -36,9 +38,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun History(
-    navigateTo: (NavType) -> Unit,
-    navigateBack: () -> Unit,
-    vm: HistoryViewModel = viewModel()
+    navigateTo: (NavType) -> Unit, navigateBack: () -> Unit, vm: HistoryViewModel = viewModel()
 ) {
     val ls = rememberLazyListState()
 
@@ -52,13 +52,16 @@ fun History(
             state = ls,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(9F)
+            modifier = Modifier.fillMaxHeight(0.9F)
         ) {
             if (vm.history.isNotEmpty()) {
-                items(vm.history, key = { it.id }) { e ->
-                    EntryItem(e) {
-                        vm.getTransactionDetails(e.operationId, nextScreen = { t ->
-                            navigateTo(TransactionDetailsKey(t, e))
+                itemsIndexed(vm.history, key = { _, it -> it.id }) { i, entry ->
+                    EntryItem(
+                        entry = entry,
+                        modifier = Modifier.animateItem(fadeInSpec = tween(delayMillis = 30 * i))
+                    ) {
+                        vm.getTransactionDetails(entry.operationId, nextScreen = { t ->
+                            navigateTo(TransactionDetailsKey(t, entry))
                         })
                     }
                 }
@@ -73,10 +76,11 @@ fun History(
                             }
                         }
 
-                        !vm.endOfHistory ->
-                            TextButton(onClick = { vm.loadMore() }, Modifier.padding(10.dp)) {
-                                Text("Cargar más", color = textColor())
-                            }
+                        !vm.endOfHistory -> TextButton(
+                            onClick = { vm.loadMore() }, Modifier.padding(10.dp)
+                        ) {
+                            Text("Cargar más", color = textColor())
+                        }
 
                         else -> LastHistoryItem("Fin del historial")
                     }
@@ -105,10 +109,10 @@ fun History(
 }
 
 @Composable
-fun EntryItem(entry: Entry, onClick: () -> Unit) {
+fun EntryItem(entry: Entry, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
         elevation = 5.dp,
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 15.dp, vertical = 5.dp)
             .clickable { onClick() },
     ) {

@@ -74,7 +74,10 @@ import com.sjm.bankapp.ui.theme.secondaryBtnColor
 import com.sjm.bankapp.ui.theme.strokeColor
 
 @Composable
-fun Base(content: @Composable() (ColumnScope.() -> Unit)) {
+fun Base(
+    verticalArrangement: Arrangement.Vertical = Arrangement.SpaceBetween,
+    content: @Composable() (ColumnScope.() -> Unit)
+) {
     Column(
         Modifier
             .fillMaxSize()
@@ -86,7 +89,7 @@ fun Base(content: @Composable() (ColumnScope.() -> Unit)) {
             )
             .windowInsetsPadding(WindowInsets.systemBars),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = verticalArrangement,
         content = content
     )
 }
@@ -202,11 +205,15 @@ fun Card(
 }
 
 @Composable
-fun OptionsCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun OptionsCard(
+    modifier: Modifier = Modifier,
+    elevation: Dp = 8.dp,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, strokeColor()),
-        elevation = 8.dp,
+        elevation = elevation,
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
@@ -373,6 +380,17 @@ fun NoNetworkDialog(onClick: () -> Unit) {
         text = "No tienes conexión a internet",
         subtext = "Restablece tu conexión o intenta mas tarde",
         buttonText = "SALIR",
+        onButtonClick = onClick,
+        onDismissRequest = {},
+    )
+}
+
+@Composable
+fun SessionExpiredDialog(onClick: () -> Unit) {
+    GenericDialog(
+        text = "La sesión expiró",
+        subtext = "Debes volver a iniciar sesión",
+        buttonText = "REGRESAR",
         onButtonClick = onClick,
         onDismissRequest = {},
     )

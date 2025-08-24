@@ -1,5 +1,5 @@
 package com.sjm.bankend.models
 
-enum class TransactionState {
-    PENDING, FAILED, SUCCESS
+enum class TransactionState(val value: String) {
+    PENDING("PENDIENTE"), FAILED("FALLIDA"), SUCCESS("COMPLETADA")
 }

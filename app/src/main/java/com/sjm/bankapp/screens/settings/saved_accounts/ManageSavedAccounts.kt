@@ -1,9 +1,17 @@
 package com.sjm.bankapp.screens.settings.saved_accounts
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInQuint
+import androidx.compose.animation.core.EaseOutQuint
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,45 +57,62 @@ fun ManageSavedAccounts(navigateBack: () -> Unit, vm: SavedAccountsViewModel = v
     var openEditDialog by remember { mutableStateOf(false) }
     var openDeleteDialog by remember { mutableStateOf(false) }
 
+    var animate by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        animate = true
+    }
+
+    val enterAnimation = fadeIn(tween(durationMillis = 300)) + scaleIn(
+        animationSpec = tween(
+            300, easing = EaseOutQuint
+        ), initialScale = 0.8F
+    )
+    val elevation by animateDpAsState(
+        if (animate) 8.dp else 0.dp, animationSpec = tween(400, easing = EaseInQuint)
+    )
+
     Base {
         Title("Cuentas guardadas")
 
-        Spacer(modifier = Modifier.weight(0.4F))
-
-        Card(
-            Modifier
-                .padding(horizontal = 20.dp)
-                .weight(1F)
-                .fillMaxWidth()
-        ) {
-            if (vm.savedAccounts.isEmpty()) {
-                Text(
-                    "No hay cuentas guardadas",
+        Column {
+            AnimatedVisibility(animate, enter = enterAnimation) {
+                Card(
                     Modifier
+                        .fillMaxHeight(0.6F)
                         .fillMaxWidth()
-                        .padding(20.dp),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                LazyColumn(Modifier.padding(10.dp)) {
-                    items(vm.savedAccounts) {
-                        SavedAccountItem(account = it, {
-                            vm.selectedAccount = it
-                            openEditDialog = true
-                        }, {
-                            vm.selectedAccount = it
-                            openDeleteDialog = true
-                        })
+                        .padding(horizontal = 20.dp),
+                    elevation = elevation
+                ) {
+                    if (vm.savedAccounts.isEmpty()) {
+                        Text(
+                            "No hay cuentas guardadas",
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        LazyColumn(Modifier.padding(10.dp)) {
+                            items(vm.savedAccounts) {
+                                SavedAccountItem(account = it, {
+                                    vm.selectedAccount = it
+                                    openEditDialog = true
+                                }, {
+                                    vm.selectedAccount = it
+                                    openDeleteDialog = true
+                                })
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        BottomButtonBar(
-            onCancel = navigateBack,
-            acceptText = "AGREGAR",
-            onAccept = { openAddDialog = true },
-        )
+            BottomButtonBar(
+                onCancel = navigateBack,
+                acceptText = "AGREGAR",
+                onAccept = { openAddDialog = true },
+            )
+        }
 
         when {
             openAddDialog -> {
@@ -96,13 +122,15 @@ fun ManageSavedAccounts(navigateBack: () -> Unit, vm: SavedAccountsViewModel = v
             }
 
             openEditDialog -> {
-                EditDialog(vm.selectedAccount ?: SavedAccount(0, "Default"),
+                EditDialog(
+                    vm.selectedAccount ?: SavedAccount(0, "Default"),
                     onDismissRequest = { openEditDialog = false },
                     onAccept = { desc, id -> vm.editAccount(desc, id) })
             }
 
             openDeleteDialog -> {
-                DeleteDialog(selected = vm.selectedAccount ?: SavedAccount(0, "Default"),
+                DeleteDialog(
+                    selected = vm.selectedAccount ?: SavedAccount(0, "Default"),
                     onDismissRequest = { openDeleteDialog = false },
                     onAccept = {
                         vm.removeAccount()
@@ -176,7 +204,8 @@ fun AddDialog(
                     }
                     Spacer(modifier = Modifier.width(20.dp))
 
-                    Button(modifier = Modifier.weight(1f),
+                    Button(
+                        modifier = Modifier.weight(1f),
                         enabled = description.isNotBlank() and id.isNotEmpty(),
                         onClick = {
                             onAccept(description, id.toLong())
@@ -223,14 +252,16 @@ fun EditDialog(
                         .padding(top = 10.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(colors = ButtonDefaults.buttonColors(secondaryBtnColor()),
+                    Button(
+                        colors = ButtonDefaults.buttonColors(secondaryBtnColor()),
                         modifier = Modifier.weight(1f),
                         onClick = { onDismissRequest() }) {
                         Text("CANCELAR")
                     }
                     Spacer(modifier = Modifier.width(14.dp))
 
-                    Button(modifier = Modifier.weight(1f),
+                    Button(
+                        modifier = Modifier.weight(1f),
                         enabled = description.isNotBlank() and id.isNotEmpty(),
                         onClick = {
                             onAccept(description, id.toLong())

@@ -54,11 +54,15 @@ class PayBillViewModel : ViewModel() {
         }
     }
 
-    fun payBill(next: (Bill, TransactionResponse) -> Unit) {
+    fun payBill(next: (Bill, TransactionResponse) -> Unit, onError: (Int) -> Unit) {
         if (selectedBusiness != null && billCode.isNotEmpty() && state == State.FOUND && bill != null) {
             viewModelScope.launch {
                 val res = BankEnd.payBill(bill!!)
-                next(bill!!, res)
+                if (res.isSuccessful) {
+                    next(bill!!, res.body()!!)
+                } else {
+                    onError(res.code())
+                }
             }
         }
     }
