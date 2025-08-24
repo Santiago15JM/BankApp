@@ -25,6 +25,10 @@ import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.TransactionDetailsKey
+import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.END
+import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.FAILED
+import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.LOADED
+import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.LOADING
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.Button
@@ -58,7 +62,7 @@ fun History(
                 itemsIndexed(vm.history, key = { _, it -> it.id }) { i, entry ->
                     EntryItem(
                         entry = entry,
-                        modifier = Modifier.animateItem(fadeInSpec = tween(delayMillis = 30 * i))
+                        modifier = Modifier.animateItem(fadeInSpec = tween(delayMillis = if (i < 10) 30 * i else 30))
                     ) {
                         vm.getTransactionDetails(entry.operationId, nextScreen = { t ->
                             navigateTo(TransactionDetailsKey(t, entry))
@@ -66,31 +70,31 @@ fun History(
                     }
                 }
                 item {
-                    when {
-                        vm.loading -> CircularProgressIndicator()
+                    when (vm.state) {
+                        LOADING -> CircularProgressIndicator()
 
-                        vm.failed -> {
+                        FAILED -> {
                             LastHistoryItem("Hubo un error obteniendo transacciones anteriores")
                             TextButton(onClick = { vm.loadMore() }) {
                                 Text("Cargar más")
                             }
                         }
 
-                        !vm.endOfHistory -> TextButton(
+                        END -> LastHistoryItem("Fin del historial")
+
+                        else -> TextButton(
                             onClick = { vm.loadMore() }, Modifier.padding(10.dp)
                         ) {
                             Text("Cargar más", color = textColor())
                         }
-
-                        else -> LastHistoryItem("Fin del historial")
                     }
                 }
             } else {
                 item {
                     when {
-                        !vm.loadedInitial -> CircularProgressIndicator()
+                        vm.state != LOADED -> CircularProgressIndicator()
 
-                        vm.failed -> Text("Hubo un error obteniendo tus transacciones")
+                        vm.state == FAILED -> Text("Hubo un error obteniendo tus transacciones")
 
                         vm.history.isEmpty() -> Text("No hay transacciones")
                     }

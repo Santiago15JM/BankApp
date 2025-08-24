@@ -33,7 +33,7 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     showError = true
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showNetworkError = true
             }
             showLoading = false
@@ -51,7 +51,7 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     showError = true
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showNetworkError = true
             }
             showLoading = false
@@ -69,7 +69,7 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     showError = true
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showNetworkError = true
             }
             showLoading = false

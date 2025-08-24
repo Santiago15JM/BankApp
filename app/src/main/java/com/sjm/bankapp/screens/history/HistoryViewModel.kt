@@ -14,44 +14,33 @@ import kotlinx.coroutines.launch
 
 class HistoryViewModel : ViewModel() {
     val history = mutableStateListOf<Entry>()
-    var loadedInitial by mutableStateOf(false)
-    var failed by mutableStateOf(false)
-    var loading by mutableStateOf(false)
-    var endOfHistory by mutableStateOf(false)
+    var state by mutableStateOf(HistoryScreenState.EMPTY)
     private var page = 0
 
     init {
-        viewModelScope.launch {
-            try {
-                val res = BankEnd.getTransactionHistory(Session.accountId) ?: return@launch
-                history.addAll(res)
-                if (res.count() < 10) endOfHistory = true
+        loadMore()
+    }
 
-                page++
-                loadedInitial = true
-            } catch (e: Exception) {
-                loadedInitial = true
-                failed = true
+    private fun loadTransactions(page: Int) {
+        viewModelScope.launch {
+            state = HistoryScreenState.LOADING
+            try {
+                val res = BankEnd.getTransactionHistory(Session.accountId, page)
+                if (res == null) {
+                    state = HistoryScreenState.FAILED
+                    return@launch
+                }
+                history.addAll(res)
+
+                state =
+                    if (res.isEmpty() || res.count() < 10) HistoryScreenState.END else HistoryScreenState.LOADED
+            } catch (_: Exception) {
+                state = HistoryScreenState.FAILED
             }
         }
     }
 
-    fun loadMore() {
-        viewModelScope.launch {
-            loading = true
-            try {
-                val res = BankEnd.getTransactionHistory(Session.accountId,page) ?: return@launch
-                history.addAll(res)
-                if (res.isEmpty() || res.count() < 10) endOfHistory = true
-                page++
-                loading = false
-                failed = false
-            } catch (e: Exception) {
-                loading = false
-                failed = true
-            }
-        }
-    }
+    fun loadMore() = loadTransactions(page++)
 
     fun getTransactionDetails(operationId: String, nextScreen: (Transaction) -> Unit) {
         viewModelScope.launch {
@@ -60,4 +49,7 @@ class HistoryViewModel : ViewModel() {
         }
     }
 
+    enum class HistoryScreenState() {
+        EMPTY, LOADED, LOADING, FAILED, END
+    }
 }

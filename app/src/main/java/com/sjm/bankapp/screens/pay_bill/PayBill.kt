@@ -48,6 +48,9 @@ import com.sjm.bankapp.logic.SoundManager
 import com.sjm.bankapp.logic.models.Business
 import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.PostBillKey
+import com.sjm.bankapp.screens.pay_bill.PayBillViewModel.BillScreenState.FETCHING
+import com.sjm.bankapp.screens.pay_bill.PayBillViewModel.BillScreenState.INITIAL
+import com.sjm.bankapp.screens.pay_bill.PayBillViewModel.BillScreenState.NOT_FOUND
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.BottomButtonBar
@@ -100,9 +103,9 @@ fun PayBill(
 
         Subtitle(
             modifier = Modifier.padding(20.dp), text = when (vm.state) {
-                State.INITIAL -> "Ingresa los datos de la factura"
-                State.FETCHING -> "Obteniendo factura"
-                State.NOT_FOUND -> "Asegúrate de que los datos son correctos"
+                INITIAL -> "Ingresa los datos de la factura"
+                FETCHING -> "Obteniendo factura"
+                NOT_FOUND -> "Asegúrate de que los datos son correctos"
                 else -> "Factura"
             }
         )
@@ -152,7 +155,7 @@ fun PayBill(
                             "Valor: $${if (vm.bill != null && vm.billCode.isNotEmpty()) vm.bill?.cost else "N.A"}",
                             Modifier.padding(top = 10.dp)
                         )
-                        if (vm.state == State.FETCHING) CircularProgressIndicator(Modifier.size(18.dp))
+                        if (vm.state == FETCHING) CircularProgressIndicator(Modifier.size(18.dp))
                     }
                 }
             }

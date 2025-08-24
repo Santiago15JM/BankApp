@@ -19,7 +19,7 @@ class PayBillViewModel : ViewModel() {
     var businessList = mutableListOf<Business>()
     var bill by mutableStateOf<Bill?>(null)
 
-    var state by mutableStateOf(State.INITIAL)
+    var state by mutableStateOf(BillScreenState.INITIAL)
     var fetchCostJob: Job? = null
 
     fun fetchBusinesses() {
@@ -33,9 +33,9 @@ class PayBillViewModel : ViewModel() {
         bill = BankEnd.fetchBill(selectedBusiness!!.id, billCode)
 
         state = if (bill == null) {
-            State.NOT_FOUND
+            BillScreenState.NOT_FOUND
         } else {
-            State.FOUND
+            BillScreenState.FOUND
         }
     }
 
@@ -43,19 +43,19 @@ class PayBillViewModel : ViewModel() {
         fetchCostJob?.cancel()
 
         if (selectedBusiness == null || billCode.isEmpty()) {
-            state = State.NOT_FOUND
+            state = BillScreenState.NOT_FOUND
             return
         }
 
         fetchCostJob = viewModelScope.launch {
-            state = State.FETCHING
+            state = BillScreenState.FETCHING
             delay(1_000) // Debounce time
             getBill()
         }
     }
 
     fun payBill(next: (Bill, TransactionResponse) -> Unit, onError: (Int) -> Unit) {
-        if (selectedBusiness != null && billCode.isNotEmpty() && state == State.FOUND && bill != null) {
+        if (selectedBusiness != null && billCode.isNotEmpty() && state == BillScreenState.FOUND && bill != null) {
             viewModelScope.launch {
                 val res = BankEnd.payBill(bill!!)
                 if (res.isSuccessful) {
@@ -68,9 +68,9 @@ class PayBillViewModel : ViewModel() {
     }
 
     fun shouldEnableButton() =
-        selectedBusiness != null && billCode.isNotEmpty() && state == State.FOUND
-}
+        selectedBusiness != null && billCode.isNotEmpty() && state == BillScreenState.FOUND
 
-enum class State {
-    INITIAL, FETCHING, FOUND, NOT_FOUND
+    enum class BillScreenState {
+        INITIAL, FETCHING, FOUND, NOT_FOUND
+    }
 }
