@@ -12,9 +12,11 @@ import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
 import kotlinx.coroutines.launch
 
+const val PAGE_SIZE = 10
+
 class HistoryViewModel : ViewModel() {
     val history = mutableStateListOf<Entry>()
-    var state by mutableStateOf(HistoryScreenState.EMPTY)
+    var state by mutableStateOf(HistoryScreenState.LOADING)
     private var page = 0
 
     init {
@@ -26,21 +28,22 @@ class HistoryViewModel : ViewModel() {
             state = HistoryScreenState.LOADING
             try {
                 val res = BankEnd.getTransactionHistory(Session.accountId, page)
-                if (res == null) {
-                    state = HistoryScreenState.FAILED
-                    return@launch
-                }
-                history.addAll(res)
 
-                state =
-                    if (res.isEmpty() || res.count() < 10) HistoryScreenState.END else HistoryScreenState.LOADED
+                if (res != null && res.isNotEmpty()) history.addAll(res)
+
+                state = when {
+                    res == null -> HistoryScreenState.FAILED
+                    res.isEmpty() && history.isEmpty() -> HistoryScreenState.EMPTY
+                    res.count() < PAGE_SIZE || (res.isEmpty() && history.isNotEmpty()) -> HistoryScreenState.END
+                    else -> HistoryScreenState.LOADED
+                }
             } catch (_: Exception) {
                 state = HistoryScreenState.FAILED
             }
         }
     }
 
-    fun loadMore() = loadTransactions(page++)
+    fun loadMore() = loadTransactions(page++) // TODO Handle page rollback on error
 
     fun getTransactionDetails(operationId: String, nextScreen: (Transaction) -> Unit) {
         viewModelScope.launch {

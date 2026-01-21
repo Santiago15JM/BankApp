@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sjm.bankapp.logic.Session
 import com.sjm.bankapp.logic.models.SavedAccount
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SavedAccountsViewModel: ViewModel() {
@@ -13,8 +14,8 @@ class SavedAccountsViewModel: ViewModel() {
     private var dao = Session.getSavedAccountsDao()
 
     init {
-        viewModelScope.launch {
-            dao.getAll().collect {
+        viewModelScope.launch { //TODO Re-think list state
+            dao.getAllFlow().collectLatest {
                 savedAccounts.clear()
                 savedAccounts.addAll(it)
             }

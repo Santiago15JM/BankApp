@@ -11,7 +11,8 @@ import com.sjm.bankapp.logic.Session
 import com.sjm.bankapp.logic.dto.transaction.TransactionRequest
 import com.sjm.bankapp.logic.models.SavedAccount
 import com.sjm.bankapp.logic.models.Transaction
-import com.sjm.bankend.models.TransactionState
+import com.sjm.bankapp.logic.models.TransactionState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SendCashViewModel : ViewModel() {
@@ -23,7 +24,7 @@ class SendCashViewModel : ViewModel() {
     //Saved Account
     var savedAccounts: MutableList<SavedAccount> = mutableStateListOf()
     var usingSavedAccount by mutableStateOf(true)
-    val selectedAccount by lazy { mutableStateOf(savedAccounts.first()) }
+    var selectedAccount by mutableStateOf<SavedAccount?>(null)
 
     //Non Saved Account
     var receiverID by mutableStateOf("")
@@ -32,12 +33,12 @@ class SendCashViewModel : ViewModel() {
 
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             funds = BankEnd.getBalance()
-            dao.getAll().collect {
-                savedAccounts.clear()
-                savedAccounts.addAll(it)
-            }
+            val accounts = dao.getAll()
+            savedAccounts.clear()
+            savedAccounts.addAll(accounts)
+            selectedAccount = savedAccounts.firstOrNull()
         }
     }
 
@@ -49,7 +50,7 @@ class SendCashViewModel : ViewModel() {
         val request = TransactionRequest(
             amount = amount.toInt(),
             senderAId = Session.accountId,
-            receiverAId = if (usingSavedAccount) selectedAccount.value.aId else receiverID.toLong()
+            receiverAId = if (usingSavedAccount) selectedAccount!!.aId else receiverID.toLong()
         )
 
         viewModelScope.launch {
@@ -82,7 +83,7 @@ class SendCashViewModel : ViewModel() {
     fun shouldEnableButton(): Boolean = when {
         amount.isEmpty() -> false
         amount.toLong() > funds -> false
-        usingSavedAccount and (selectedAccount.value.aId == Session.accountId) -> false
+        usingSavedAccount and (selectedAccount == null || selectedAccount!!.aId == Session.accountId) -> false
         usingSavedAccount and savedAccounts.isNotEmpty() -> true
         !usingSavedAccount and (receiverID == Session.accountId.toString()) -> false
         !usingSavedAccount and receiverID.isNotEmpty() -> true

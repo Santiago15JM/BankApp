@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.sjm.bankapp.logic.isValidEmail
 import com.sjm.bankapp.ui.Button
 import com.sjm.bankapp.ui.Card
 import com.sjm.bankapp.ui.Subtext
@@ -77,8 +78,4 @@ fun ChangeEmailDialog(
             }
         }
     }
-}
-
-fun String.isValidEmail(): Boolean {
-    return this.isNotBlank() && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }

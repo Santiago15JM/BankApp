@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sjm.bankapp.logic.models.Entry
 import com.sjm.bankapp.logic.models.Transaction
+import com.sjm.bankapp.logic.models.TransactionState
 import com.sjm.bankapp.logic.models.TransactionType
 import com.sjm.bankapp.ui.Base
 import com.sjm.bankapp.ui.Button
@@ -35,7 +36,6 @@ import com.sjm.bankapp.ui.theme.BankAppTheme
 import com.sjm.bankapp.ui.theme.Black
 import com.sjm.bankapp.ui.theme.accentColor
 import com.sjm.bankapp.ui.theme.secondaryBtnColor
-import com.sjm.bankend.models.TransactionState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

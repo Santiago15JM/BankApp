@@ -27,7 +27,6 @@ import com.sjm.bankapp.navigation.NavType
 import com.sjm.bankapp.navigation.TransactionDetailsKey
 import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.END
 import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.FAILED
-import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.LOADED
 import com.sjm.bankapp.screens.history.HistoryViewModel.HistoryScreenState.LOADING
 import com.sjm.bankapp.ui.Balance
 import com.sjm.bankapp.ui.Base
@@ -58,7 +57,15 @@ fun History(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxHeight(0.9F)
         ) {
-            if (vm.history.isNotEmpty()) {
+            if (vm.history.isEmpty()) {
+                item {
+                    when (vm.state) {
+                        LOADING -> CircularProgressIndicator()
+                        FAILED -> Text("Hubo un error obteniendo tus transacciones")
+                        else -> Text("No hay transacciones")
+                    }
+                }
+            } else {
                 itemsIndexed(vm.history, key = { _, it -> it.id }) { i, entry ->
                     EntryItem(
                         entry = entry,
@@ -87,16 +94,6 @@ fun History(
                         ) {
                             Text("Cargar más", color = textColor())
                         }
-                    }
-                }
-            } else {
-                item {
-                    when {
-                        vm.state != LOADED -> CircularProgressIndicator()
-
-                        vm.state == FAILED -> Text("Hubo un error obteniendo tus transacciones")
-
-                        vm.history.isEmpty() -> Text("No hay transacciones")
                     }
                 }
             }
@@ -144,8 +141,8 @@ fun EntryItem(entry: Entry, modifier: Modifier = Modifier, onClick: () -> Unit) 
 @Composable
 fun LastHistoryItem(text: String) {
     Card(
-        elevation = 5.dp,
-        modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp),
+        elevation = 4.dp,
+        modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 20.dp),
     ) {
         Column(
             Modifier

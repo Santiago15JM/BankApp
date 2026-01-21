@@ -40,7 +40,7 @@ object BankEnd {
     }
 
     suspend fun getBalance(): Long {
-        return api.getBalance(Session.userId)
+        return api.getBalance(Session.accountId)
     }
 
     suspend fun login(email: String, password: String): LoginResponse? {
@@ -70,7 +70,30 @@ object BankEnd {
         return api.sendFCMToken(RegisterTokenRequest(accountId, token)).code()
     }
 
-    suspend fun getTransactionNotificationDetail(operationId: String): NotificationTransactionDetail {
-        return api.getTransactionDetail(operationId).body()!!
+    suspend fun getTransactionNotificationDetail(operationId: String): NotificationTransactionDetail? {
+        return api.getTransactionDetail(operationId).body()
+    }
+
+    suspend fun register(
+        personalDetails: PersonalDetails,
+        contactDetails: ContactDetails,
+        financialDetails: FinancialDetails,
+        credentialDetails: CredentialDetails
+    ): Int {
+        val request = RegisterRequest(
+            names = personalDetails.names,
+            lastNames = personalDetails.lastNames,
+            identificationType = personalDetails.identificationType!!,
+            identification = personalDetails.identification,
+            birthDate = personalDetails.birthDate,
+            nationality = personalDetails.nationality!!,
+            phone = contactDetails.phone,
+            email = contactDetails.email,
+            address = contactDetails.address,
+            employmentStatus = financialDetails.employmentStatus!!,
+            approximateMonthlyIncome = financialDetails.approximateMonthlyIncome,
+            password = credentialDetails.password
+        )
+        return api.register(request).code()
     }
 }

@@ -19,7 +19,10 @@ abstract class AppDatabase : RoomDatabase() {
 @Dao
 interface SavedAccountsDao {
     @Query("SELECT * FROM SavedAccount")
-    fun getAll(): Flow<List<SavedAccount>>
+    fun getAll(): List<SavedAccount>
+
+    @Query("SELECT * FROM SavedAccount")
+    fun getAllFlow(): Flow<List<SavedAccount>>
 
     @Upsert
     suspend fun upsert(accounts: SavedAccount)

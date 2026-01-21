@@ -1,7 +1,6 @@
 package com.sjm.bankapp.logic.models
 
 import com.sjm.bankapp.config.LocalDateTimeSerializer
-import com.sjm.bankend.models.TransactionState
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 

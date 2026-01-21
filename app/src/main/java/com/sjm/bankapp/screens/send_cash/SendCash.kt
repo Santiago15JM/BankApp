@@ -127,7 +127,7 @@ fun SendCash(
                     })
                 }, onDismissRequest = { showConfirmDialog = false }) {
                     Text(
-                        "Destino: ${if (vm.usingSavedAccount) vm.selectedAccount.value.description else vm.receiverID}",
+                        "Destino: ${if (vm.usingSavedAccount) vm.selectedAccount?.description else vm.receiverID}",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -192,57 +192,64 @@ fun TypeOfAccountSelector(
             }
             Divider(color = strokeColor())
 
-            when {
-                !vm.usingSavedAccount -> NonSavedPanel(vm)
-                vm.savedAccounts.isEmpty() -> Text(
-                    "No tienes cuentas guardadas", Modifier.padding(20.dp)
+            if (vm.usingSavedAccount) {
+                SavedAccountsPanel(
+                    savedAccounts = vm.savedAccounts,
+                    selectedAccount = vm.selectedAccount,
+                    amount = vm.amount,
+                    onAmountChange = { if (it.isDigitsOnly()) vm.amount = it },
+                    isAmountInvalid = { vm.isAmountInvalid() },
+                    onSelect = { vm.selectedAccount = it }
                 )
-
-                else -> SavedAccountsPanel(vm)
-            }
+            } else NonSavedPanel(vm)
         }
     }
 }
 
 @Composable
-fun SavedAccountsPanel(vm: SendCashViewModel) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)) {
-        OutlinedTextField(
-            vm.amount,
-            { if (it.isDigitsOnly()) vm.amount = it },
-            label = { Text("Monto") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            isError = vm.isAmountInvalid(),
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+fun SavedAccountsPanel(
+    savedAccounts: List<SavedAccount>,
+    selectedAccount: SavedAccount?,
+    amount: String,
+    onAmountChange: (String) -> Unit,
+    isAmountInvalid: () -> Boolean,
+    onSelect: (SavedAccount) -> Unit,
+) {
+    if (savedAccounts.isEmpty() || selectedAccount == null) {
+        Text("No tienes cuentas guardadas", Modifier.padding(20.dp))
+    } else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)
+        ) {
+            OutlinedTextField(
+                amount,
+                onAmountChange,
+                label = { Text("Monto") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                isError = isAmountInvalid(),
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        AnimatedVisibility(vm.isAmountInvalid()) {
-            Text("No tienes suficiente dinero", color = errorColor())
+            AnimatedVisibility(isAmountInvalid()) {
+                Text("No tienes suficiente dinero", color = errorColor())
+            }
+
+            SavedAccountsList(savedAccounts, selectedAccount, onSelect = onSelect)
         }
-
-        SavedAccountsList(vm.savedAccounts, vm.selectedAccount.value, onSelect = {
-            vm.selectedAccount.value = it
-        })
     }
 }
 
 @Composable
 fun SavedAccountsList(
-    savedAccounts: MutableList<SavedAccount>,
+    savedAccounts: List<SavedAccount>,
     selectedAccount: SavedAccount,
     onSelect: (SavedAccount) -> Unit
 ) {
     Column(
-        Modifier
-            .fillMaxSize()
+        Modifier.fillMaxSize()
     ) {
-        RadioGroup(
-            savedAccounts, selection = selectedAccount
-        ) {
-            onSelect(it)
-        }
+        RadioGroup(savedAccounts, selection = selectedAccount, onItemClick = { onSelect(it) })
     }
 }
 

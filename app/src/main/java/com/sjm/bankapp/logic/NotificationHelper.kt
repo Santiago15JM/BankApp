@@ -23,7 +23,7 @@ import com.sjm.bankapp.R
 object NotificationHelper {
     fun createNotificationChannel(context: Context) {
         val channel = NotificationChannel(
-            "default_channel", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT
+            "default_channel", "Default Channel", NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = "Used for general notifications"
         }
@@ -43,8 +43,11 @@ object NotificationHelper {
 
         val builder = NotificationCompat.Builder(context, "default_channel")
             .setSmallIcon(R.drawable.ic_launcher_foreground).setContentTitle(title)
-            .setContentText(message).setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true)
+            .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
 
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(

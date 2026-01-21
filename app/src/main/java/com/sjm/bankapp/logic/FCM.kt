@@ -28,8 +28,11 @@ class FCM : FirebaseMessagingService() {
 
     fun onNewTransaction(operationId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val (amount, senderName) = BankEnd.getTransactionNotificationDetail(operationId)
-            NotificationHelper.showSimpleNotification(this@FCM,"Recibiste $amount", "Recibiste $amount de $senderName")
+            val notificationDetail = BankEnd.getTransactionNotificationDetail(operationId)
+            if (notificationDetail != null) {
+                val (amount, senderName) = notificationDetail
+                NotificationHelper.showSimpleNotification(this@FCM,"Recibiste $amount", "Recibiste $amount de $senderName")
+            }
         }
     }
 

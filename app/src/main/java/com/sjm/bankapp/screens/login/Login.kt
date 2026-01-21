@@ -64,7 +64,7 @@ fun Login(navigateTo: (NavType) -> Unit, vm: LoginViewModel = viewModel()) {
         Spacer(Modifier.height(20.dp))
 
         Text(
-            text = "INICIO DE SESION",
+            text = "INICIO DE SESIÓN",
             fontSize = 38.sp,
             fontWeight = FontWeight.Bold,
         )
