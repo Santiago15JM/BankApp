@@ -4,6 +4,13 @@
 
 BankApp is a project which mimics a bank account app, that lets you make transactions like sending cash or paying bills, among other basic features.
 
+<p style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+    <img alt="home light theme demo" height="400" src="./images/home_light.png"/>
+    <img alt="home dark theme demo" height="400" src="./images/home_dark.png"/>
+    <img alt="history demo" height="400" src="./images/history.png"/>
+    <img alt="transfer demo" style="border-radius: 30px;" height="400" src="./images/transfer_demo.gif"/>
+</p>
+
 ## Libraries
 
 - Android
@@ -29,10 +36,10 @@ Copy the project and run it either in an emulator or a physical device.
 
 1. Clone the repository:
 
-    ```bash
-    git clone https://github.com/Santiago15JM/BankApp.git
-    ```
+   ```bash
+   git clone https://github.com/Santiago15JM/BankApp.git
+   ```
 
-2. Make sure that the gradle project is synced 
+2. Make sure that the gradle project is synced
 
 3. Run the app
